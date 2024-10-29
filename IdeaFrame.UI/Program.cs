@@ -1,3 +1,10 @@
+using IdeaFrame.Core.Domain.Entities.IdentitiesEntities;
+using IdeaFrame.Infrastructure.DbContextCustom;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using System;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthorization();
@@ -11,8 +18,17 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
-
-
+builder.Services.AddDbContext<MyDbContexSqlServer>(
+    options => {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    }
+);
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
+.AddEntityFrameworkStores<MyDbContexSqlServer>()
+.AddDefaultTokenProviders()
+.AddUserStore<UserStore<ApplicationUser, ApplicationRole,
+MyDbContexSqlServer, Guid>>()
+.AddRoleStore<RoleStore<ApplicationRole, MyDbContexSqlServer, Guid>>();
 
 var app = builder.Build();
 app.UseHttpsRedirection();

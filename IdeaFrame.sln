@@ -7,17 +7,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{07F7A5E1-1E2
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5F4FD522-E53C-4CAC-9E1B-5B063A10B096}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdeaFrame.UI", "IdeaFrame.UI\IdeaFrame.UI.csproj", "{1EC31747-19C1-4DAF-A191-3532CC66664B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdeaFrame.UI", "IdeaFrame.UI\IdeaFrame.UI.csproj", "{1EC31747-19C1-4DAF-A191-3532CC66664B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{70BAD802-488B-46E0-BE0E-352EC9D8DCE0} = {70BAD802-488B-46E0-BE0E-352EC9D8DCE0}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdeaFrame.Core", "IdeaFrame.Core\IdeaFrame.Core.csproj", "{6709A519-4A8B-43AC-B1D6-8C5C1DB76075}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdeaFrame.Core", "IdeaFrame.Core\IdeaFrame.Core.csproj", "{6709A519-4A8B-43AC-B1D6-8C5C1DB76075}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdeaFrame.Infrastructure", "IdeaFrame.Infrastructure\IdeaFrame.Infrastructure.csproj", "{70BAD802-488B-46E0-BE0E-352EC9D8DCE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdeaFrame.Infrastructure", "IdeaFrame.Infrastructure\IdeaFrame.Infrastructure.csproj", "{70BAD802-488B-46E0-BE0E-352EC9D8DCE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdeaFrame.ServiceTests", "IdeaFrame.ServiceTests\IdeaFrame.ServiceTests.csproj", "{602545FF-EE87-4FD4-AC52-CF25A710C35A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdeaFrame.ServiceTests", "IdeaFrame.ServiceTests\IdeaFrame.ServiceTests.csproj", "{602545FF-EE87-4FD4-AC52-CF25A710C35A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdeaFrame.ControllerTests", "IdeaFrame.ControllerTests\IdeaFrame.ControllerTests.csproj", "{870EA25D-4B96-4E85-87C9-F7AE63DDAF15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdeaFrame.ControllerTests", "IdeaFrame.ControllerTests\IdeaFrame.ControllerTests.csproj", "{870EA25D-4B96-4E85-87C9-F7AE63DDAF15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{C9D1C406-D60B-47D1-A359-6B883B9E3FFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{C9D1C406-D60B-47D1-A359-6B883B9E3FFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
