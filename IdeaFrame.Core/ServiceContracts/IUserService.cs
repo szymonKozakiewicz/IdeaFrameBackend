@@ -6,11 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IdeaFrame.Core.Domain.Entities.IdentitiesEntities
+namespace IdeaFrame.Core.ServiceContracts
 {
-
-    public class ApplicationRole: IdentityRole<Guid>
+    public interface IUserService
     {
-
+        public Task<IdentityResult> AddNewUser(RegisterLoginDTO newUser);
     }
 }
