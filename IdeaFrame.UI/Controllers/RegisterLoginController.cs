@@ -19,6 +19,7 @@ namespace IdeaFrame.UI.Controllers
         [HttpPost("registerNewUser")]
        public async Task<IActionResult> registerNewUser([FromBody]RegisterLoginDTO newUser)
        {
+            newUser.Password = newUser.Password + "#";
             var result=await userService.AddNewUser(newUser);
             if (result.Succeeded)
                 return Ok();

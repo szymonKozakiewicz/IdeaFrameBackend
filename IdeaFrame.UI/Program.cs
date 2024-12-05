@@ -1,4 +1,6 @@
 using IdeaFrame.Core.Domain.Entities.IdentitiesEntities;
+using IdeaFrame.Core.ServiceContracts;
+using IdeaFrame.Core.Services;
 using IdeaFrame.Infrastructure.DbContextCustom;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -29,6 +31,8 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
 .AddUserStore<UserStore<ApplicationUser, ApplicationRole,
 MyDbContexSqlServer, Guid>>()
 .AddRoleStore<RoleStore<ApplicationRole, MyDbContexSqlServer, Guid>>();
+builder.Services.AddTransient<IUserService,UserService>();
+
 
 var app = builder.Build();
 app.UseHttpsRedirection();
@@ -38,6 +42,7 @@ app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
 
 
 app.Run();
