@@ -11,5 +11,9 @@ namespace IdeaFrame.Core.ServiceContracts
     public interface IUserService
     {
         public Task<IdentityResult> AddNewUser(RegisterLoginDTO newUser);
+
+        public Task<bool> IsLoginAvailable(string login);
     }
+
+    
 }

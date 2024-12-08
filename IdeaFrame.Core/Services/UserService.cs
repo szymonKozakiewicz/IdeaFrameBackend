@@ -25,6 +25,14 @@ namespace IdeaFrame.Core.Services
             IdentityResult result = await this.userManager.CreateAsync(newUser, newUserDTO.Password);
             return result;
         }
-           
+
+        public async Task<bool> IsLoginAvailable(string login)
+        {
+            var user = await this.userManager.FindByNameAsync(login);
+            if (user == null)
+                return true;
+            else
+                return false;
+        }
     }
 }

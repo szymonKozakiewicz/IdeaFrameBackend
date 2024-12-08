@@ -4,6 +4,7 @@ using IdeaFrame.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Eventing.Reader;
 
 namespace IdeaFrame.UI.Controllers
 {
@@ -17,7 +18,7 @@ namespace IdeaFrame.UI.Controllers
             this.userService = userService;
         }
         [HttpPost("registerNewUser")]
-       public async Task<IActionResult> registerNewUser([FromBody]RegisterLoginDTO newUser)
+       public async Task<IActionResult> RegisterNewUser([FromBody]RegisterLoginDTO newUser)
        {
             newUser.Password = newUser.Password + "#";
             var result=await userService.AddNewUser(newUser);
@@ -25,5 +26,14 @@ namespace IdeaFrame.UI.Controllers
                 return Ok();
             else return BadRequest();
        }
+        [HttpGet("isLoginAvailable")]
+        public async Task<IActionResult> IsLoginAvailable([FromQuery]String login)
+        {
+            bool isLoginAvailable =await this.userService.IsLoginAvailable(login);
+            if (isLoginAvailable)
+                return Ok(true);
+            else 
+                return Ok(false);
+        }
     }
 }
