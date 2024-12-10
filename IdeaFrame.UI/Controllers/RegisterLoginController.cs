@@ -20,6 +20,12 @@ namespace IdeaFrame.UI.Controllers
         [HttpPost("registerNewUser")]
        public async Task<IActionResult> RegisterNewUser([FromBody]RegisterLoginDTO newUser)
        {
+            bool loginNotAvailable = !(await userService.IsLoginAvailable(newUser.Login));
+            if (loginNotAvailable)
+            {
+                return BadRequest();
+            }
+
 
             newUser.Password = newUser.Password + "#";
             var result=await userService.AddNewUser(newUser);

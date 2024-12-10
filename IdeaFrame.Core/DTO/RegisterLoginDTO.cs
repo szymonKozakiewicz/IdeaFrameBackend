@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IdeaFrame.Core.CustomValidationAttributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace IdeaFrame.Core.DTO
 
         [Required]
         [StringLength(100, MinimumLength = 6)]
+        [HasUpperCase]
+        [HasDigit]
         public string? Password { get; set; }
 
     }

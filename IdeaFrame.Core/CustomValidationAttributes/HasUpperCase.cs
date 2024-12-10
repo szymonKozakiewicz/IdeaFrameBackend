@@ -16,7 +16,11 @@ namespace IdeaFrame.Core.CustomValidationAttributes
 
         public override bool IsValid(object? value)
         {
-            return base.IsValid(value);
+            if (value is string str)
+            {
+                return str.Any(char.IsUpper);
+            }
+            return false;
         }
     }
 }
