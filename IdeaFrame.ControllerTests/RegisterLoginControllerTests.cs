@@ -71,6 +71,7 @@ namespace IdeaFrame.ControllerTests
                 Login = "takenLogin",
                 Password = "Password2"
             };
+            
             IdentityResult identityResult = IdentityResult.Success;
             userServiceMock.Setup(userService => userService.AddNewUser(It.IsAny<RegisterLoginDTO>()))
                 .ReturnsAsync(identityResult);

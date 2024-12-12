@@ -11,7 +11,7 @@ namespace IdeaFrame.Core.DTO
     public class RegisterLoginDTO
     {
         [Required]
-        [StringLength(100,MinimumLength =6)]
+        [StringLength(100,MinimumLength =1)]
         public string? Login { get; set; }
 
         [Required]

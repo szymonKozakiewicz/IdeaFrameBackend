@@ -15,10 +15,15 @@ namespace IdeaFrame.Infrastructure.DbContextCustom
         {
         }
 
+        public void ClearDatabaseBeforeTests()
+        {
+            this.Database.EnsureDeleted();
+            this.Database.EnsureCreated();
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
         }
 
 
