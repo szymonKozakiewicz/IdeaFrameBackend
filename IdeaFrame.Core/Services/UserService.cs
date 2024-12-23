@@ -6,19 +6,24 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace IdeaFrame.Core.Services
 {
     public class UserService : IUserService
     {
         UserManager<ApplicationUser> userManager;
+        private SignInManager<ApplicationUser> _signInManager;
+
         public UserService(UserManager<ApplicationUser> userManager)
         {
             this.userManager = userManager;
             
         }
+
         public async Task<IdentityResult> AddNewUser(RegisterLoginDTO newUserDTO)
         {
             ApplicationUser newUser = DtoToEntityConverter.ConvertRegisterLoginDtoToApplicationUser(newUserDTO);
@@ -33,6 +38,16 @@ namespace IdeaFrame.Core.Services
                 return true;
             else
                 return false;
+        }
+
+        public async Task<bool>AreLoginDataCorrect(RegisterLoginDTO loginData)
+        {
+            ApplicationUser? user=await userManager.FindByNameAsync(loginData.Login);
+            if(user == null)
+                return false;
+            bool IsPasswordCorrect=await userManager.CheckPasswordAsync(user,loginData.Password);
+
+            return IsPasswordCorrect;
         }
     }
 }

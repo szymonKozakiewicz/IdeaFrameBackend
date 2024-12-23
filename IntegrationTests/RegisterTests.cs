@@ -1,12 +1,6 @@
 ﻿using FluentAssertions;
 using IdeaFrame.Core.DTO;
 using IdeaFrame.Infrastructure.DbContextCustom;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IntegrationTests
 {
@@ -105,7 +99,7 @@ namespace IntegrationTests
             //act
             var result = await this.client.GetAsync(urlWithQueryString);
             string responseBody = await result.Content.ReadAsStringAsync();
-
+            
 
             //assert
             responseBody.Should().Be("true");

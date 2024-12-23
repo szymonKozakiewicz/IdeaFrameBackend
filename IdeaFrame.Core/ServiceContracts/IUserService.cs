@@ -13,6 +13,8 @@ namespace IdeaFrame.Core.ServiceContracts
         public Task<IdentityResult> AddNewUser(RegisterLoginDTO newUser);
 
         public Task<bool> IsLoginAvailable(string login);
+
+        public Task<bool> AreLoginDataCorrect(RegisterLoginDTO loginData);
     }
 
     
