@@ -19,7 +19,9 @@ namespace IdeaFrame.ControllerTests
     public class RegisterLoginControllerTests
     {
         IUserService userService;
+        IJwtService jwtService;
         Mock<IUserService> userServiceMock;
+        Mock<IJwtService> jwtServiceMock;
         RegisterLoginController registerLoginController;
 
 
@@ -32,7 +34,9 @@ namespace IdeaFrame.ControllerTests
         {
             userServiceMock = new Mock<IUserService>();
             userService = userServiceMock.Object;
-            registerLoginController = new RegisterLoginController(userServiceMock.Object);
+            jwtServiceMock = new Mock<IJwtService>();
+            jwtService = jwtServiceMock.Object;
+            registerLoginController = new RegisterLoginController(userService,jwtService);
         }
 
         [Fact]

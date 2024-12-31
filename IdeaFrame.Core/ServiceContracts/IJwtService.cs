@@ -1,4 +1,5 @@
-﻿using IdeaFrame.Core.Domain.Entities.IdentitiesEntities;
+﻿using IdeaFrame.Core.Domain.Entities;
+using IdeaFrame.Core.Domain.Entities.IdentitiesEntities;
 using IdeaFrame.Core.DTO;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace IdeaFrame.Core.ServiceContracts
 {
     public interface IJwtService
     {
-        JwtResponse CreateJwtResponse(ApplicationUser user);
+        Task<JwtResponse> CreateJwtResponse(string userName);
+        public Task<RefreshTokenDto> CreateRefreshToken(string userName);
     }
 }

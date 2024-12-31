@@ -12,7 +12,7 @@ namespace IdeaFrame.Infrastructure.DbContextCustom
 {
     public class MyDbContexSqlServer : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
-        DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public MyDbContexSqlServer(DbContextOptions options) : base(options)
         {
         }
@@ -26,7 +26,14 @@ namespace IdeaFrame.Infrastructure.DbContextCustom
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<RefreshToken>().ToTable("RefreshTokens");
+            modelBuilder.Entity<RefreshToken>()
+                .ToTable("RefreshTokens")
+                .HasOne<ApplicationUser>()
+                .WithOne()
+                .HasForeignKey<RefreshToken>(rt => rt.UserName)
+                .HasPrincipalKey<ApplicationUser>(u => u.UserName);
+
+
         }
 
 

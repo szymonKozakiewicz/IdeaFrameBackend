@@ -16,18 +16,20 @@ namespace IdeaFrame.Core.Services
     public class UserService : IUserService
     {
         UserManager<ApplicationUser> userManager;
-        private SignInManager<ApplicationUser> _signInManager;
+        IJwtService jwtService;
 
-        public UserService(UserManager<ApplicationUser> userManager)
+        public UserService(UserManager<ApplicationUser> userManager, IJwtService _jwtService)
         {
             this.userManager = userManager;
-            
+            this.jwtService = _jwtService;
+
         }
 
         public async Task<IdentityResult> AddNewUser(RegisterLoginDTO newUserDTO)
         {
             ApplicationUser newUser = DtoToEntityConverter.ConvertRegisterLoginDtoToApplicationUser(newUserDTO);
             IdentityResult result = await this.userManager.CreateAsync(newUser, newUserDTO.Password);
+      
             return result;
         }
 
@@ -42,6 +44,7 @@ namespace IdeaFrame.Core.Services
 
         public async Task<bool>AreLoginDataCorrect(RegisterLoginDTO loginData)
         {
+            loginData.Password = loginData.Password + "#";
             ApplicationUser? user=await userManager.FindByNameAsync(loginData.Login);
             if(user == null)
                 return false;

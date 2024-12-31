@@ -9,10 +9,9 @@ namespace IdeaFrame.Core.DTO
     public class JwtResponse
     {
 
-        public string Token { get; set; }
-        public DateTime TokenExpiration {  get; set; }
-        public string RefreshToken { get; set; }
-        public DateTime RefreshTokenExpiration { get; set; }
+        public string AcessToken { get; set; }
+        public DateTime AcessTokenExpiration {  get; set; }
+
 
     }
 }

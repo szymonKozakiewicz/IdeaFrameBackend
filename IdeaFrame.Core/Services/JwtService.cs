@@ -27,35 +27,45 @@ namespace IdeaFrame.Core.Services
             _configuration = configuration;
             this._jwtRepository = _jwtRepository;
         }
-        public JwtResponse CreateJwtResponse(ApplicationUser user)
+
+        public async Task<JwtResponse> CreateJwtResponse(string userName)
         {
             DateTime tokenExpires = getTokenExpiration("JWT:tokenExpirationTimeHours");
-            DateTime tokenRefreshExpires = getTokenExpiration("JWT:refreshTokenExpirationTimeHours");
-            string tokenStr = generateJwtToken(user, tokenExpires);
-            string refreshToken = generateRefreshToken();
-            saveRefreshToken(user, tokenRefreshExpires, refreshToken);
+
+            string tokenStr = generateJwtToken(userName, tokenExpires);
+
+
 
             JwtResponse response = new JwtResponse()
             {
-                Token = tokenStr,
-                TokenExpiration = tokenExpires,
-                RefreshToken = refreshToken,
-                RefreshTokenExpiration = tokenRefreshExpires
+                AcessToken = tokenStr,
+                AcessTokenExpiration = tokenExpires,
 
             };
             return response;
         }
 
-        private void saveRefreshToken(ApplicationUser user, DateTime tokenRefreshExpires, string refreshToken)
+        public async Task<RefreshTokenDto>CreateRefreshToken(string userName)
+        {
+            DateTime tokenRefreshExpires = getTokenExpiration("JWT:refreshTokenExpirationTimeHours");
+            string refreshTokenStr = generateRefreshToken();
+            RefreshToken refreshToken= await saveRefreshToken(userName, tokenRefreshExpires, refreshTokenStr);
+            RefreshTokenDto refreshTokenDto = new RefreshTokenDto(refreshToken);
+            return refreshTokenDto;
+
+        }
+
+        private async Task<RefreshToken> saveRefreshToken(string userName, DateTime tokenRefreshExpires, string refreshTokenStr)
         {
             var refreshToken = new RefreshToken()
             {
-                Token = refreshToken,
+                Token = refreshTokenStr,
                 Expiration = tokenRefreshExpires,
-                UserName = user.UserName
+                UserName = userName
             };
 
-            this._jwtRepository.UpdateRefreshToken(refreshToken);
+            await this._jwtRepository.UpdateRefreshToken(refreshToken);
+            return refreshToken;
         }
 
 
@@ -66,11 +76,11 @@ namespace IdeaFrame.Core.Services
             return tokenExpires;
         }
 
-        private string generateJwtToken(ApplicationUser user, DateTime tokenExpires)
+        private string generateJwtToken(string userName, DateTime tokenExpires)
         {
             var claims = new[]
                         {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Sub, userName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
             };

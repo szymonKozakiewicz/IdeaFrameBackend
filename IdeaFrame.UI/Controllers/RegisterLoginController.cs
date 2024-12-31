@@ -1,6 +1,7 @@
 ﻿using IdeaFrame.Core.Domain.Entities.IdentitiesEntities;
 using IdeaFrame.Core.DTO;
 using IdeaFrame.Core.ServiceContracts;
+using IdeaFrame.Infrastructure.Migrations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -52,23 +53,37 @@ namespace IdeaFrame.UI.Controllers
             bool loginDataCorrect = await this.userService.AreLoginDataCorrect(loginDTO);
             if (!loginDataCorrect)
                 return Unauthorized();
-            JwtResponse jwtResponse;
-            return await tryCreateJwtResponse(loginDTO, out jwtResponse);
+            
+            return await tryCreateJwtResponse(loginDTO);
 
         }
 
-        private async Task<IActionResult> tryCreateJwtResponse(RegisterLoginDTO loginDTO, out JwtResponse jwtResponse)
+        private async Task<IActionResult> tryCreateJwtResponse(RegisterLoginDTO loginDTO)
         {
             try
             {
 
-                jwtResponse = await this.jwtService.CreateJwtResponse(loginDTO.Login);
+                JwtResponse jwtResponse = await this.jwtService.CreateJwtResponse(loginDTO.Login);
+                await addRefreshTokenToCookies(loginDTO.Login);
                 return Ok(jwtResponse);
             }
-            catch
+            catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private async Task addRefreshTokenToCookies(String login)
+        {
+            RefreshTokenDto refreshToken = await this.jwtService.CreateRefreshToken(login);
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = refreshToken.Expiration
+            };
+            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
         }
     }
 }

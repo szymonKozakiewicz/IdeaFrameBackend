@@ -1,7 +1,9 @@
 using IdeaFrame.Core.Domain.Entities.IdentitiesEntities;
+using IdeaFrame.Core.Domain.RepositoryContracts;
 using IdeaFrame.Core.ServiceContracts;
 using IdeaFrame.Core.Services;
 using IdeaFrame.Infrastructure.DbContextCustom;
+using IdeaFrame.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -55,7 +57,8 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
 MyDbContexSqlServer, Guid>>()
 .AddRoleStore<RoleStore<ApplicationRole, MyDbContexSqlServer, Guid>>();
 builder.Services.AddTransient<IUserService,UserService>();
-
+builder.Services.AddTransient<IJwtService, JwtService>();
+builder.Services.AddTransient<IJwtRepository, JwtRepository>();
 
 var app = builder.Build();
 app.UseHttpsRedirection();
