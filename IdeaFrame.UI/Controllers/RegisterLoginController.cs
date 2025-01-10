@@ -2,6 +2,7 @@
 using IdeaFrame.Core.DTO;
 using IdeaFrame.Core.ServiceContracts;
 using IdeaFrame.Infrastructure.Migrations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using System.Diagnostics.Eventing.Reader;
 namespace IdeaFrame.UI.Controllers
 {
     [Route("api/[controller]")]
+    [AllowAnonymous]
     [ApiController]
     public class RegisterLoginController : ControllerBase
     {

@@ -38,8 +38,8 @@ namespace IdeaFrame.Core.Services
 
             JwtResponse response = new JwtResponse()
             {
-                AcessToken = tokenStr,
-                AcessTokenExpiration = tokenExpires,
+                AccessToken = tokenStr,
+                AccessTokenExpiration = tokenExpires,
 
             };
             return response;
@@ -85,20 +85,25 @@ namespace IdeaFrame.Core.Services
                 new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
             };
 
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSymmetricalKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
 
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
+                issuer: _configuration["JWT:Issuer"],
+                audience: _configuration["JWT:Audience"],
                 claims: claims,
                 expires: tokenExpires,
                 signingCredentials: creds
             );
 
             string tokenStr = new JwtSecurityTokenHandler().WriteToken(token);
+
+
+
+     
             return tokenStr;
         }
 
