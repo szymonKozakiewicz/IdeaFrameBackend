@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IdeaFrame.Core\IdeaFrame.Core.csproj" />
     <ProjectReference Include="..\IdeaFrame.Infrastructure\IdeaFrame.Infrastructure.csproj" />
   </ItemGroup>
 

@@ -18,6 +18,10 @@ namespace IdeaFrame.Infrastructure.Repositories
             this._context = _context;
         }
 
+        public async Task<RefreshToken?> FindRefreshToken(string token)
+        {
+            return await this._context.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == token);
+        }
 
         public async Task UpdateRefreshToken(RefreshToken refreshToken)
         {

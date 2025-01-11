@@ -28,9 +28,9 @@ namespace IdeaFrame.Core.Services
             this._jwtRepository = _jwtRepository;
         }
 
-        public async Task<JwtResponse> CreateJwtResponse(string userName)
+        public JwtResponse CreateJwtResponse(string userName)
         {
-            DateTime tokenExpires = getTokenExpiration("JWT:tokenExpirationTimeHours");
+            DateTime tokenExpires = getTokenExpiration("JWT:tokenExpirationTimeMinutes");
 
             string tokenStr = generateJwtToken(userName, tokenExpires);
 
@@ -47,11 +47,30 @@ namespace IdeaFrame.Core.Services
 
         public async Task<RefreshTokenDto>CreateRefreshToken(string userName)
         {
-            DateTime tokenRefreshExpires = getTokenExpiration("JWT:refreshTokenExpirationTimeHours");
+            DateTime tokenRefreshExpires = getTokenExpiration("JWT:refreshTokenExpirationTimeMinutes");
             string refreshTokenStr = generateRefreshToken();
             RefreshToken refreshToken= await saveRefreshToken(userName, tokenRefreshExpires, refreshTokenStr);
             RefreshTokenDto refreshTokenDto = new RefreshTokenDto(refreshToken);
             return refreshTokenDto;
+
+        }
+
+        public async Task<JwtResponse?> CreateJwtResponseIfTokenValid(string refreshTokenStr)
+        {
+            
+            RefreshToken? refreshToken = await this._jwtRepository.FindRefreshToken(refreshTokenStr);
+            if (refreshToken == null)
+            {
+                return null;
+            }
+
+            if (refreshToken.Expiration < DateTime.Now)
+            {
+                return null;
+            }
+
+            JwtResponse jwtResponse = CreateJwtResponse(refreshToken.UserName);
+            return jwtResponse;
 
         }
 
@@ -72,7 +91,7 @@ namespace IdeaFrame.Core.Services
         private DateTime getTokenExpiration(string pathToTokenExpirationInConf)
         {
             double tokenExpirationTime = double.Parse(_configuration[pathToTokenExpirationInConf]);
-            var tokenExpires = DateTime.Now.AddHours(tokenExpirationTime);
+            var tokenExpires = DateTime.Now.AddMinutes(tokenExpirationTime);
             return tokenExpires;
         }
 

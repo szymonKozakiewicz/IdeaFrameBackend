@@ -10,5 +10,7 @@ namespace IdeaFrame.Core.Domain.RepositoryContracts
     public interface IJwtRepository
     {
         public Task UpdateRefreshToken(RefreshToken refreshToken);
+
+        public Task<RefreshToken?> FindRefreshToken(string token);
     }
 }

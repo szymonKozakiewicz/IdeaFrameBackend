@@ -1,4 +1,5 @@
-﻿using IdeaFrame.Core.Domain.Entities.IdentitiesEntities;
+﻿using IdeaFrame.Core.Domain.Entities;
+using IdeaFrame.Core.Domain.Entities.IdentitiesEntities;
 using IdeaFrame.Core.DTO;
 using IdeaFrame.Core.ServiceContracts;
 using IdeaFrame.Infrastructure.Migrations;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Eventing.Reader;
+
 
 namespace IdeaFrame.UI.Controllers
 {
@@ -55,37 +57,74 @@ namespace IdeaFrame.UI.Controllers
             bool loginDataCorrect = await this.userService.AreLoginDataCorrect(loginDTO);
             if (!loginDataCorrect)
                 return Unauthorized();
+
+
+            JwtResponse jwtResponse = this.jwtService.CreateJwtResponse(loginDTO.Login);
+            IActionResult response;
             
-            return await tryCreateJwtResponse(loginDTO);
-
-        }
-
-        private async Task<IActionResult> tryCreateJwtResponse(RegisterLoginDTO loginDTO)
-        {
             try
             {
-
-                JwtResponse jwtResponse = await this.jwtService.CreateJwtResponse(loginDTO.Login);
                 await addRefreshTokenToCookies(loginDTO.Login);
-                return Ok(jwtResponse);
+                response = Ok(jwtResponse);
             }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response= StatusCode(StatusCodes.Status500InternalServerError);
             }
+
+            return response;
+
+
+
         }
+
+        [HttpPost("refreshToken")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            String refreshToken = Request.Cookies["refreshToken"];
+            if (refreshToken == null)
+                return Unauthorized();
+
+
+            JwtResponse jwtResponse = await jwtService.CreateJwtResponseIfTokenValid(refreshToken);
+
+            if (jwtResponse == null)
+                return Unauthorized();
+
+            return Ok(jwtResponse);
+
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            removeRefreshTokenFromCookies("refreshToken");
+            return Ok();
+
+        }
+
 
         private async Task addRefreshTokenToCookies(String login)
         {
+            var cookieName = "refreshToken";
+            removeRefreshTokenFromCookies(cookieName);
             RefreshTokenDto refreshToken = await this.jwtService.CreateRefreshToken(login);
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = refreshToken.Expiration
+                Expires = refreshToken.Expiration,
+                Path = "/"
             };
-            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
+            Response.Cookies.Append(cookieName, refreshToken.Token, cookieOptions);
+        }
+
+        private void removeRefreshTokenFromCookies(string cookieName)
+        {
+            
+            Response.Cookies.Delete(cookieName);
+            
         }
     }
 }

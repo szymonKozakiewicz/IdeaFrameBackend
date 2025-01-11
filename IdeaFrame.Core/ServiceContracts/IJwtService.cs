@@ -11,7 +11,9 @@ namespace IdeaFrame.Core.ServiceContracts
 {
     public interface IJwtService
     {
-        Task<JwtResponse> CreateJwtResponse(string userName);
+        JwtResponse CreateJwtResponse(string userName);
         public Task<RefreshTokenDto> CreateRefreshToken(string userName);
+
+        public Task<JwtResponse> CreateJwtResponseIfTokenValid(string refreshToken);
     }
 }
