@@ -1,55 +1,27 @@
-﻿using IdeaFrame.Core.Domain.Entities;
-using IdeaFrame.Core.Domain.Entities.IdentitiesEntities;
-using IdeaFrame.Core.DTO;
+﻿using IdeaFrame.Core.DTO;
 using IdeaFrame.Core.ServiceContracts;
-using IdeaFrame.Infrastructure.Migrations;
+using IdeaFrame.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.Eventing.Reader;
-
 
 namespace IdeaFrame.UI.Controllers
 {
     [Route("api/[controller]")]
     [AllowAnonymous]
     [ApiController]
-    public class RegisterLoginController : ControllerBase
+    public class LoginController : ControllerBase
     {
+
         IUserService userService;
         IJwtService jwtService;
-        public RegisterLoginController(IUserService userService,IJwtService jwtService)
+        public LoginController(IUserService userService, IJwtService jwtService)
         {
             this.userService = userService;
             this.jwtService = jwtService;
         }
-        [HttpPost("registerNewUser")]
-       public async Task<IActionResult> RegisterNewUser([FromBody]RegisterLoginDTO newUser)
-       {
-            bool loginNotAvailable = !(await userService.IsLoginAvailable(newUser.Login));
-            if (loginNotAvailable)
-            {
-                return BadRequest();
-            }
 
 
-            newUser.Password = newUser.Password + "#";
-            var result=await userService.AddNewUser(newUser);
-            if (result.Succeeded)
-                return Ok();
-            else return BadRequest();
-       }
-        [HttpGet("isLoginAvailable")]
-        public async Task<IActionResult> IsLoginAvailable([FromQuery]String login)
-        {
-     
-            bool isLoginAvailable =await this.userService.IsLoginAvailable(login);
-            if (isLoginAvailable)
-                return Ok(true);
-            else 
-                return Ok(false);
-        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] RegisterLoginDTO loginDTO)
@@ -61,7 +33,7 @@ namespace IdeaFrame.UI.Controllers
 
             JwtResponse jwtResponse = this.jwtService.CreateJwtResponse(loginDTO.Login);
             IActionResult response;
-            
+
             try
             {
                 await addRefreshTokenToCookies(loginDTO.Login);
@@ -69,7 +41,7 @@ namespace IdeaFrame.UI.Controllers
             }
             catch (Exception e)
             {
-                response= StatusCode(StatusCodes.Status500InternalServerError);
+                response = StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return response;
@@ -122,9 +94,9 @@ namespace IdeaFrame.UI.Controllers
 
         private void removeRefreshTokenFromCookies(string cookieName)
         {
-            
+
             Response.Cookies.Delete(cookieName);
-            
+
         }
     }
 }

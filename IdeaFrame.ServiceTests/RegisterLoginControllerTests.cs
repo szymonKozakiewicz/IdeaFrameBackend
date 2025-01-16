@@ -22,7 +22,7 @@ namespace IdeaFrame.ControllerTests
         IJwtService jwtService;
         Mock<IUserService> userServiceMock;
         Mock<IJwtService> jwtServiceMock;
-        RegisterController registerLoginController;
+        RegisterLoginController registerLoginController;
 
 
         public RegisterLoginControllerTests()
@@ -36,7 +36,7 @@ namespace IdeaFrame.ControllerTests
             userService = userServiceMock.Object;
             jwtServiceMock = new Mock<IJwtService>();
             jwtService = jwtServiceMock.Object;
-            registerLoginController = new RegisterController(userService,jwtService);
+            registerLoginController = new RegisterLoginController(userService,jwtService);
         }
 
         [Fact]
@@ -126,8 +126,6 @@ namespace IdeaFrame.ControllerTests
             bool? value = okResult.Value as bool?;
             value.Should().Be(false);
         }
-
-        public async Task Login()
 
     }
 }

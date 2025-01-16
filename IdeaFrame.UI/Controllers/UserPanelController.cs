@@ -8,7 +8,7 @@ namespace IdeaFrame.UI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserPanelController : Controller
+    public class UserPanelController : ControllerBase
     {
 
         IConfiguration _configuration;
