@@ -18,5 +18,11 @@ namespace IdeaFrame.Core.DTO
             Expiration = refreshToken.Expiration;
 
         }
+        public RefreshTokenDto(String token,DateTime experiation)
+        {
+            Token = token;
+            Expiration = experiation;
+
+        }
     }
 }
