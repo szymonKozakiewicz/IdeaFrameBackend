@@ -16,16 +16,16 @@ using System.Threading.Tasks;
 namespace IdeaFrame.ControllerTests
 {
     
-    public class RegisterLoginControllerTests
+    public class RegisterControllerTests
     {
         IUserService userService;
         IJwtService jwtService;
         Mock<IUserService> userServiceMock;
         Mock<IJwtService> jwtServiceMock;
-        RegisterLoginController registerLoginController;
+        RegisterController registerController;
 
 
-        public RegisterLoginControllerTests()
+        public RegisterControllerTests()
         {
             initControllerAndService();
         }
@@ -36,7 +36,7 @@ namespace IdeaFrame.ControllerTests
             userService = userServiceMock.Object;
             jwtServiceMock = new Mock<IJwtService>();
             jwtService = jwtServiceMock.Object;
-            registerLoginController = new RegisterLoginController(userService,jwtService);
+            registerController = new RegisterController(userService);
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace IdeaFrame.ControllerTests
                 .ReturnsAsync(true);
 
             //act
-            IActionResult result=await registerLoginController.RegisterNewUser(newUser);
+            IActionResult result=await registerController.RegisterNewUser(newUser);
           
             
             //assert
@@ -83,7 +83,7 @@ namespace IdeaFrame.ControllerTests
                   .ReturnsAsync(false);
 
             //act
-            var result=await registerLoginController.RegisterNewUser(newUser);
+            var result=await registerController.RegisterNewUser(newUser);
 
             //assert
             result.Should().BeOfType<BadRequestResult>();
@@ -99,7 +99,7 @@ namespace IdeaFrame.ControllerTests
                   .ReturnsAsync(true);
 
             //act
-            var result = await registerLoginController.IsLoginAvailable(availableLogin);
+            var result = await registerController.IsLoginAvailable(availableLogin);
 
             //assert
             result.Should().BeOfType<OkObjectResult>();
@@ -118,7 +118,7 @@ namespace IdeaFrame.ControllerTests
                   .ReturnsAsync(false);
 
             //act
-            var result = await registerLoginController.IsLoginAvailable(availableLogin);
+            var result = await registerController.IsLoginAvailable(availableLogin);
 
             //assert
             result.Should().BeOfType<OkObjectResult>();
@@ -126,6 +126,8 @@ namespace IdeaFrame.ControllerTests
             bool? value = okResult.Value as bool?;
             value.Should().Be(false);
         }
+
+        
 
     }
 }

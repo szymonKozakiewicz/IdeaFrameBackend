@@ -27,10 +27,10 @@ namespace IntegrationTests
             };
             this.dbContext.ClearDatabaseBeforeTests();
             var newUserJson = IntegratedTestHelper.ConvertToJson(newUser);
-            var firstResponse=await this.client.PostAsync("/api/RegisterLogin/registerNewUser", newUserJson);
+            var firstResponse=await this.client.PostAsync("/api/Register/registerNewUser", newUserJson);
 
             //act
-            var result = await this.client.PostAsync("/api/RegisterLogin/registerNewUser", newUserJson);
+            var result = await this.client.PostAsync("/api/Register/registerNewUser", newUserJson);
 
 
             //assert
@@ -55,7 +55,7 @@ namespace IntegrationTests
 
 
             //act
-            var result = await this.client.PostAsync("/api/RegisterLogin/registerNewUser", newUserJson);
+            var result = await this.client.PostAsync("/api/Register/registerNewUser", newUserJson);
 
 
             //assert
@@ -77,7 +77,7 @@ namespace IntegrationTests
 
 
             //act
-            var result = await this.client.PostAsync("/api/RegisterLogin/registerNewUser", newUserJson);
+            var result = await this.client.PostAsync("/api/Register/registerNewUser", newUserJson);
 
 
             //assert
@@ -90,7 +90,7 @@ namespace IntegrationTests
         public async Task IsLoginAvailable_forNotExistingLogin_expectServerWilReturnTrue()
         {
             string login = "Login";
-            string url = "/api/RegisterLogin/isLoginAvailable";
+            string url = "/api/Register/isLoginAvailable";
             string urlWithQueryString = IntegratedTestHelper.CreateQueryString(url, login, "login");
             this.dbContext.ClearDatabaseBeforeTests();
 
@@ -115,11 +115,11 @@ namespace IntegrationTests
                 Password = "Password2"
             };
             string login = "takenLogin";
-            string url = "/api/RegisterLogin/isLoginAvailable";
+            string url = "/api/Register/isLoginAvailable";
             string urlWithQueryString = IntegratedTestHelper.CreateQueryString(url, login,"login");
             this.dbContext.ClearDatabaseBeforeTests();
             var newUserJson = IntegratedTestHelper.ConvertToJson(newUser);
-            var firstResponse = await this.client.PostAsync("/api/RegisterLogin/registerNewUser", newUserJson);
+            var firstResponse = await this.client.PostAsync("/api/Register/registerNewUser", newUserJson);
 
 
             //act
