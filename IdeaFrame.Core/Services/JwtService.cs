@@ -40,6 +40,7 @@ namespace IdeaFrame.Core.Services
             {
                 AccessToken = tokenStr,
                 AccessTokenExpiration = tokenExpires,
+                UserName = userName
 
             };
             return response;

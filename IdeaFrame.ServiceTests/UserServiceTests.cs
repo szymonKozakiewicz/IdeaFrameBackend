@@ -133,7 +133,7 @@ namespace IdeaFrame.ServiceTests
 
 
         [Fact]
-        public async Task AreLoginDataCorrect_WhenLoginInCorrectAndPasswordCorrect_ExpectThatItWillReturnFalse()
+        public async Task AreLoginDataCorrect_WhenLoginIncorrectAndPasswordCorrect_ExpectThatItWillReturnFalse()
         {
             initServicesAndMocks();
             ApplicationUser? user = new ApplicationUser();
