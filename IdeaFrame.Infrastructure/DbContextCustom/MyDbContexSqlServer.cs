@@ -13,6 +13,7 @@ namespace IdeaFrame.Infrastructure.DbContextCustom
     public class MyDbContexSqlServer : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<FileSystemItem> FileSystemItems { get; set; }
         public MyDbContexSqlServer(DbContextOptions options) : base(options)
         {
         }
@@ -33,6 +34,14 @@ namespace IdeaFrame.Infrastructure.DbContextCustom
                 .HasForeignKey<RefreshToken>(rt => rt.UserName)
                 .HasPrincipalKey<ApplicationUser>(u => u.UserName);
 
+
+            modelBuilder.Entity<FileSystemItem>()
+                .ToTable("FileSystemItems")
+                .HasOne(x => x.Parent)
+                .WithMany()
+                .HasForeignKey(x => x.ParentId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasPrincipalKey(x => x.Id);
 
         }
 
