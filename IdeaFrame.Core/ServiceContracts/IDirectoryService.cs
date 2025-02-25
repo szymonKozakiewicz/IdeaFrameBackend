@@ -1,4 +1,5 @@
 ﻿using IdeaFrame.Core.Domain.Entities;
+using IdeaFrame.Core.DTO;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace IdeaFrame.Core.ServiceContracts
 {
     public interface IDirectoryService
     {
-        public Task AddNewFolder(String newFolderName, String pathStr);
+        public Task AddNewFileItem(AddFileSystemItemRequest fileSystemRequest);
 
 
     }

@@ -8,6 +8,6 @@ namespace IdeaFrame.Core.Domain.Enums
 {
     public enum FileItemType
     {
-        FOLDER,FILE
+        FOLDER=0,FILE=1
     }
 }

@@ -70,6 +70,8 @@ builder.Services.AddDbContext<MyDbContexSqlServer>(
 );
 
 builder.Services.AddTransient<IUserService,UserService>();
+builder.Services.AddTransient<IDirectoryService, DirectoryService>();
+builder.Services.AddTransient<IDirectoryRepository, DirectoryRepository>();
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddTransient<IJwtRepository, JwtRepository>();
 builder.Services.AddAuthorization(options =>

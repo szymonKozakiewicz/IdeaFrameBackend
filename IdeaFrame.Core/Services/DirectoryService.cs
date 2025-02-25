@@ -1,6 +1,8 @@
 ﻿using IdeaFrame.Core.Domain.Entities;
 using IdeaFrame.Core.Domain.Enums;
+using IdeaFrame.Core.Domain.Exceptions;
 using IdeaFrame.Core.Domain.RepositoryContracts;
+using IdeaFrame.Core.DTO;
 using IdeaFrame.Core.ServiceContracts;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,27 +20,31 @@ namespace IdeaFrame.Core.Services
         {
             this.directoryRepository = directoryRepository;
         }
-        public async Task AddNewFolder(string newFolderName, string pathStr)
+        public async Task AddNewFileItem(AddFileSystemItemRequest fileSystemRequest)
         {
 
             FileSystemItem? parent;
             
-            parent=await getFileItemWithPath(pathStr);
+            parent=await getFileItemWithPath(fileSystemRequest.Path);
             
-            if(await this.isFolderWithSameNameInParent(parent,newFolderName))
+            if(await this.isFolderWithSameNameInParent(parent,fileSystemRequest.Name))
             {
-                throw new Exception("Folder with same name already exists");
+                throw new FileSystemNameException("Folder with same name already exists");
             }
 
 
-            var newFolder=new FileSystemItem(parent, FileItemType.FOLDER, newFolderName);
-            await directoryRepository.AddNewFileSystemItem(newFolder);
+            var newFileItem=new FileSystemItem(parent, FileItemType.FOLDER, fileSystemRequest.Name);
+            await directoryRepository.AddNewFileSystemItem(newFileItem);
 
         }
 
 
         private async Task<FileSystemItem?> getFileItemWithPath(string pathStr)
         {
+            if(pathStr == "/")
+            {
+                return null;
+            }
             string[] pathSegements = pathStr.Split("/");
             FileSystemItem? parent = null;
             FileSystemItem? resultfileSystemItem = null;
