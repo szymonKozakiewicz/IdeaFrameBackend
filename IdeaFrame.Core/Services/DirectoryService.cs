@@ -4,6 +4,7 @@ using IdeaFrame.Core.Domain.Exceptions;
 using IdeaFrame.Core.Domain.RepositoryContracts;
 using IdeaFrame.Core.DTO;
 using IdeaFrame.Core.ServiceContracts;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,21 +24,41 @@ namespace IdeaFrame.Core.Services
         public async Task AddNewFileItem(AddFileSystemItemRequest fileSystemRequest)
         {
 
-            FileSystemItem? parent;
-            
-            parent=await getFileItemWithPath(fileSystemRequest.Path);
-            
-            if(await this.isFolderWithSameNameInParent(parent,fileSystemRequest.Name))
+
+            bool nameAvailable = await IsNameAvailable(fileSystemRequest);
+            if (!nameAvailable)
             {
                 throw new FileSystemNameException("Folder with same name already exists");
             }
+            FileSystemItem? parent;
 
+            parent = await getFileItemWithPath(fileSystemRequest.Path);
 
             var newFileItem=new FileSystemItem(parent, FileItemType.FOLDER, fileSystemRequest.Name);
             await directoryRepository.AddNewFileSystemItem(newFileItem);
 
         }
 
+        public async Task<bool> IsNameAvailable(AddFileSystemItemRequest fileSystemRequest)
+        {
+
+            FileSystemItem? parent = await getFileItemWithPath(fileSystemRequest.Path);
+            List<FileSystemItem> fileItemsInParent = await directoryRepository.GetAllChildrensInFolder(parent);
+            List<FileSystemItem> fileItemsWithType = getFileItemsWithType(fileSystemRequest.Type, fileItemsInParent);
+            foreach (var fileItem in fileItemsWithType)
+            {
+                if (fileItem.Name == fileSystemRequest.Name)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static List<FileSystemItem> getFileItemsWithType(FileItemType type, List<FileSystemItem> fileItemsInParent)
+        {
+            return fileItemsInParent.Where(fileItem => fileItem.Type == type).ToList();
+        }
 
         private async Task<FileSystemItem?> getFileItemWithPath(string pathStr)
         {
@@ -55,11 +76,7 @@ namespace IdeaFrame.Core.Services
             return resultfileSystemItem;
         }
 
-        private async Task<bool> isFolderWithSameNameInParent(FileSystemItem parent, string newFolderName)
-        {
-            List<FileSystemItem> childrens = await directoryRepository.GetAllChildrensInFolder(parent);
-            return isChildWithNameAmongChildrens(newFolderName, childrens);
-        }
+  
 
         private static bool isChildWithNameAmongChildrens(string newFolderName, List<FileSystemItem> childrens)
         {

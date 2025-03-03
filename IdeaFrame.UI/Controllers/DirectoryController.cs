@@ -39,5 +39,16 @@ namespace IdeaFrame.UI.Controllers
             return Ok();
 
         }
+
+        [HttpPost("isFileItemNameAvailable")]
+        public async Task<IActionResult> IsFileItemNameAvailable(AddFileSystemItemRequest fileSystemRequest)
+        {
+
+            bool isNameAvailable = await this.directoryService.IsNameAvailable(fileSystemRequest);
+            if (isNameAvailable)
+                return Ok(true);
+            else
+                return Ok(false);
+        }
     }
 }

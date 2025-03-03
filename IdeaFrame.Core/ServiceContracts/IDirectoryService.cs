@@ -12,7 +12,7 @@ namespace IdeaFrame.Core.ServiceContracts
     public interface IDirectoryService
     {
         public Task AddNewFileItem(AddFileSystemItemRequest fileSystemRequest);
-
+        public Task<bool> IsNameAvailable(AddFileSystemItemRequest fileSystemRequest);
 
     }
 }
