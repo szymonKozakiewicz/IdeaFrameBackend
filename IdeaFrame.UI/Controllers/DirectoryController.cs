@@ -1,4 +1,5 @@
-﻿using IdeaFrame.Core.Domain.Exceptions;
+﻿using IdeaFrame.Core.Domain.Entities;
+using IdeaFrame.Core.Domain.Exceptions;
 using IdeaFrame.Core.DTO;
 using IdeaFrame.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
@@ -49,6 +50,22 @@ namespace IdeaFrame.UI.Controllers
                 return Ok(true);
             else
                 return Ok(false);
+        }
+
+        [HttpGet("getAllFoldersFromPath")]
+        public async Task<IActionResult> getAllFoldersFromPath(String path)
+        {
+            List<FileSystemItem> result;
+            try
+            {
+                result = await this.directoryService.GetAllChildrensInPath(path);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok(result);
         }
     }
 }

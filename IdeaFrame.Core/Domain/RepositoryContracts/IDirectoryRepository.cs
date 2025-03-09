@@ -11,9 +11,9 @@ namespace IdeaFrame.Core.Domain.RepositoryContracts
     public interface IDirectoryRepository
     {
 
-        public Task<FileSystemItem?> GetFileItemFromParentDirectory(FileSystemItem parent, String fileItemName);
+        public Task<FileSystemItem?> GetFileItemFromParentDirectory(FileSystemItem parent, String fileItemName, Guid ownerId);
 
-        public Task<List<FileSystemItem>> GetAllChildrensInFolder(FileSystemItem parent);
+        public Task<List<FileSystemItem>> GetAllChildrensInFolder(FileSystemItem parent,Guid ownerId);
 
         public Task AddNewFileSystemItem(FileSystemItem newFolder);
     }

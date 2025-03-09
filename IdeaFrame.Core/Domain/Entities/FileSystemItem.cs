@@ -1,4 +1,5 @@
-﻿using IdeaFrame.Core.Domain.Enums;
+﻿using IdeaFrame.Core.Domain.Entities.IdentitiesEntities;
+using IdeaFrame.Core.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,13 @@ namespace IdeaFrame.Core.Domain.Entities
         public FileItemType Type { get; set; }
         public Guid? ParentId { get; set; }
         public FileSystemItem? Parent { get; set; }
+        public ApplicationUser Owner { get; set; }
+        public Guid OwnerId { get; set; }
         public FileSystemItem()
         {
             
         }
-        public FileSystemItem(FileSystemItem? parent, FileItemType type, String name)
+        public FileSystemItem(FileSystemItem? parent, FileItemType type, String name,Guid ownerId)
         {
             Id= Guid.NewGuid();
             Parent = parent;
@@ -31,6 +34,7 @@ namespace IdeaFrame.Core.Domain.Entities
             }
             Type = type;
             Name = name;
+            OwnerId = ownerId;
         }
     }
 }

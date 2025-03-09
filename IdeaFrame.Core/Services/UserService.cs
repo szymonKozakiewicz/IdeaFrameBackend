@@ -2,11 +2,13 @@
 using IdeaFrame.Core.DTO;
 using IdeaFrame.Core.ServiceContracts;
 using IdeaFrame.Core.TypesConverters;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,11 +19,13 @@ namespace IdeaFrame.Core.Services
     {
         UserManager<ApplicationUser> userManager;
         IJwtService jwtService;
+        IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(UserManager<ApplicationUser> userManager, IJwtService _jwtService)
+        public UserService(UserManager<ApplicationUser> userManager, IJwtService _jwtService, IHttpContextAccessor httpContextAccessor)
         {
             this.userManager = userManager;
             this.jwtService = _jwtService;
+            _httpContextAccessor = httpContextAccessor;
 
         }
 
@@ -51,6 +55,12 @@ namespace IdeaFrame.Core.Services
             bool IsPasswordCorrect=await userManager.CheckPasswordAsync(user,loginData.Password);
 
             return IsPasswordCorrect;
+        }
+
+        public async Task<ApplicationUser> GetCurrentUser()
+        {
+            var userName = this._httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return await this.userManager.FindByNameAsync(userName);
         }
     }
 }

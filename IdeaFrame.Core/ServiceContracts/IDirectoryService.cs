@@ -14,5 +14,9 @@ namespace IdeaFrame.Core.ServiceContracts
         public Task AddNewFileItem(AddFileSystemItemRequest fileSystemRequest);
         public Task<bool> IsNameAvailable(AddFileSystemItemRequest fileSystemRequest);
 
+        public Task<List<FileSystemItem>> GetAllChildrensInPath(String path);
+
+        
+
     }
 }

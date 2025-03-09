@@ -42,6 +42,11 @@ namespace IdeaFrame.Infrastructure.DbContextCustom
                 .HasForeignKey(x => x.ParentId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasPrincipalKey(x => x.Id);
+            modelBuilder.Entity<FileSystemItem>()
+                .HasOne(x => x.Owner)
+                .WithMany()
+                .HasForeignKey(x => x.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
 

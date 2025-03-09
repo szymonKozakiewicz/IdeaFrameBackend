@@ -57,7 +57,7 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
-
+builder.Services.AddHttpContextAccessor();
 
 
 builder.Services.AddDbContext<MyDbContexSqlServer>(
@@ -68,7 +68,7 @@ builder.Services.AddDbContext<MyDbContexSqlServer>(
             );
     }
 );
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IUserService,UserService>();
 builder.Services.AddTransient<IDirectoryService, DirectoryService>();
 builder.Services.AddTransient<IDirectoryRepository, DirectoryRepository>();

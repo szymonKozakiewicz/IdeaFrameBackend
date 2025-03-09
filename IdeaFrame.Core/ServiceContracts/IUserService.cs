@@ -1,4 +1,5 @@
-﻿using IdeaFrame.Core.DTO;
+﻿using IdeaFrame.Core.Domain.Entities.IdentitiesEntities;
+using IdeaFrame.Core.DTO;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ namespace IdeaFrame.Core.ServiceContracts
         public Task<bool> IsLoginAvailable(string login);
 
         public Task<bool> AreLoginDataCorrect(RegisterLoginDTO loginData);
+
+        public Task<ApplicationUser> GetCurrentUser();
     }
 
     
