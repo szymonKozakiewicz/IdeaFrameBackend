@@ -53,7 +53,7 @@ namespace IdeaFrame.UI.Controllers
         }
 
         [HttpGet("getAllFoldersFromPath")]
-        public async Task<IActionResult> getAllFoldersFromPath(String path)
+        public async Task<IActionResult> GetAllFoldersFromPath(String path)
         {
             List<FileSystemItem> result;
             try

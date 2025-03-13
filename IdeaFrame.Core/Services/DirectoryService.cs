@@ -92,13 +92,14 @@ namespace IdeaFrame.Core.Services
                 return null;
             }
             string[] pathSegements = pathStr.Split("/");
+            pathSegements = pathSegements.Skip(1).ToArray();
             FileSystemItem? parent = null;
-            FileSystemItem? resultfileSystemItem = null;
+
             foreach (var pathSegement in pathSegements)
             {
-                resultfileSystemItem = await tryToGetFileSystemItemForSegment(parent, pathSegement);
+                parent = await tryToGetFileSystemItemForSegment(parent, pathSegement);
             }
-            return resultfileSystemItem;
+            return parent;
         }
 
   
