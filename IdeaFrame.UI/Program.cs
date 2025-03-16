@@ -4,6 +4,7 @@ using IdeaFrame.Core.ServiceContracts;
 using IdeaFrame.Core.Services;
 using IdeaFrame.Infrastructure.DbContextCustom;
 using IdeaFrame.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +24,7 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
 .AddUserStore<UserStore<ApplicationUser, ApplicationRole,
 MyDbContexSqlServer, Guid>>()
 .AddRoleStore<RoleStore<ApplicationRole, MyDbContexSqlServer, Guid>>();
+
 
 builder.Services.AddAuthentication(options =>
 {

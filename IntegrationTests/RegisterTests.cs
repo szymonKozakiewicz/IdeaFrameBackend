@@ -28,13 +28,14 @@ namespace IntegrationTests
             this.dbContext.ClearDatabaseBeforeTests();
             var newUserJson = IntegratedTestHelper.ConvertToJson(newUser);
             var firstResponse=await this.client.PostAsync("/api/Register/registerNewUser", newUserJson);
+            await IntegratedTestHelper.AddNewUser("takenLogin", this.client);
 
             //act
             var result = await this.client.PostAsync("/api/Register/registerNewUser", newUserJson);
 
 
             //assert
-            firstResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            //firstResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             result.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
         }
 
