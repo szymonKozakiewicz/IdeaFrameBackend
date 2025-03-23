@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ namespace IdeaFrame.Core.Services
             _userService = userService;
 
         }
-        public async Task AddNewFileItem(AddFileSystemItemRequest fileSystemRequest)
+        public async Task AddNewFileItem(FileSystemItemDTO fileSystemRequest)
         {
 
 
@@ -40,7 +41,7 @@ namespace IdeaFrame.Core.Services
             FileSystemItem? parent;
 
             parent = await getFileItemWithPath(fileSystemRequest.Path);
-            Guid currentUserId = await getCurrentUserId();
+            Guid currentUserId = await _userService.GetCurrentUserId();
 
             var newFileItem = new FileSystemItem(parent, FileItemType.FOLDER, fileSystemRequest.Name, currentUserId);
             await directoryRepository.AddNewFileSystemItem(newFileItem);
@@ -49,11 +50,11 @@ namespace IdeaFrame.Core.Services
 
 
 
-        public async Task<bool> IsNameAvailable(AddFileSystemItemRequest fileSystemRequest)
+        public async Task<bool> IsNameAvailable(FileSystemItemDTO fileSystemRequest)
         {
 
             FileSystemItem? parent = await getFileItemWithPath(fileSystemRequest.Path);
-            Guid currentUserId=await getCurrentUserId();
+            Guid currentUserId= await _userService.GetCurrentUserId();
             List<FileSystemItem> fileItemsInParent = await directoryRepository.GetAllChildrensInFolder(parent,currentUserId);
             List<FileSystemItem> fileItemsWithType = getFileItemsWithType(fileSystemRequest.Type, fileItemsInParent);
             foreach (var fileItem in fileItemsWithType)
@@ -70,7 +71,7 @@ namespace IdeaFrame.Core.Services
         public async Task<List<FileSystemItem>> GetAllChildrensInPath(String path)
         {
             FileSystemItem? parent = await getFileItemWithPath(path);
-            Guid currentUserId= await getCurrentUserId();
+            Guid currentUserId= await _userService.GetCurrentUserId();
             List<FileSystemItem> childList= await directoryRepository.GetAllChildrensInFolder(parent,currentUserId);
             
             return childList;
@@ -78,7 +79,53 @@ namespace IdeaFrame.Core.Services
         }
 
 
+        public async Task RemoveFileItem(FileSystemItemDTO fileToRemoveDTO)
+        {
+            FileSystemItem? fileItemToRemove = await getFileItem(fileToRemoveDTO);
+            if (fileItemToRemove.Type == FileItemType.FILE)
+            {
+                await this.directoryRepository.RemoveFileSystemItem(fileItemToRemove);
+                return;
+            }
 
+            await removeAllDescendantsOfFolder(fileItemToRemove);
+            await this.directoryRepository.RemoveFileSystemItem(fileItemToRemove);
+
+
+        }
+
+        private async Task removeAllDescendantsOfFolder(FileSystemItem? fileItemToRemove)
+        {
+            List<FileSystemItem> fileItemsToRemove = await this.getAllFolderDescendants(fileItemToRemove);
+            fileItemsToRemove.Reverse();
+            foreach (var elementToRemove in fileItemsToRemove)
+            {
+                await this.directoryRepository.RemoveFileSystemItem(elementToRemove);
+
+            }
+        }
+
+        private async Task<List<FileSystemItem>> getAllFolderDescendants(FileSystemItem fileItem)
+        {
+            var userId= await _userService.GetCurrentUserId();
+            List<FileSystemItem> childrens = await this.directoryRepository.GetAllChildrensInFolder(fileItem,userId);
+            List<FileSystemItem> result = new List<FileSystemItem>();
+            result.AddRange(childrens);
+            foreach (var child in childrens)
+            {
+                var childDescendants=await getAllFolderDescendants(child);
+                result.AddRange(childDescendants);
+            }
+
+            return result;
+        }
+
+        private async Task<FileSystemItem?> getFileItem(FileSystemItemDTO fileItemDTO)
+        {
+            var fullPath = fileItemDTO.GetPathPlusFileItemName();
+            var result = await this.getFileItemWithPath(fullPath);
+            return result;
+        }
 
         private static List<FileSystemItem> getFileItemsWithType(FileItemType type, List<FileSystemItem> fileItemsInParent)
         {
@@ -119,7 +166,7 @@ namespace IdeaFrame.Core.Services
 
         private async Task<FileSystemItem> tryToGetFileSystemItemForSegment(FileSystemItem? parent, string pathSegement)
         {
-            Guid currentUserId = await getCurrentUserId();
+            Guid currentUserId = await _userService.GetCurrentUserId();
             var fileSystemItem = await directoryRepository.GetFileItemFromParentDirectory(parent, pathSegement,currentUserId);
 
             if (fileSystemItem == null)
@@ -129,11 +176,7 @@ namespace IdeaFrame.Core.Services
             return fileSystemItem;
         }
 
-        private async Task<Guid> getCurrentUserId()
-        {
-            ApplicationUser currentUser = await _userService.GetCurrentUser();
-            Guid currentUserId = currentUser.Id;
-            return currentUserId;
-        }
+
+
     }
 }

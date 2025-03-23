@@ -18,6 +18,8 @@ namespace IdeaFrame.Core.ServiceContracts
         public Task<bool> AreLoginDataCorrect(RegisterLoginDTO loginData);
 
         public Task<ApplicationUser> GetCurrentUser();
+
+        public Task<Guid> GetCurrentUserId();
     }
 
     

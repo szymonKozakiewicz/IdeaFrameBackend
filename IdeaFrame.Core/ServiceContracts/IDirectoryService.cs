@@ -11,12 +11,12 @@ namespace IdeaFrame.Core.ServiceContracts
 {
     public interface IDirectoryService
     {
-        public Task AddNewFileItem(AddFileSystemItemRequest fileSystemRequest);
-        public Task<bool> IsNameAvailable(AddFileSystemItemRequest fileSystemRequest);
+        public Task AddNewFileItem(FileSystemItemDTO fileSystemRequest);
+        public Task<bool> IsNameAvailable(FileSystemItemDTO fileSystemRequest);
 
         public Task<List<FileSystemItem>> GetAllChildrensInPath(String path);
 
-        
+        public Task RemoveFileItem(FileSystemItemDTO fileToRemove);
 
     }
 }

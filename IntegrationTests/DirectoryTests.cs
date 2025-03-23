@@ -31,7 +31,7 @@ namespace IntegrationTests
         public async Task AddNewFileItem_forNameWithValidNumberOfCharacters_expectToGetOkResponse()
         {
 
-            AddFileSystemItemRequest newFolder = new AddFileSystemItemRequest()
+            FileSystemItemDTO newFolder = new FileSystemItemDTO()
             {
                 Name = "newFolder",
                 Path = "/",
@@ -56,7 +56,7 @@ namespace IntegrationTests
 
         {
 
-            AddFileSystemItemRequest newFolder = new AddFileSystemItemRequest()
+            FileSystemItemDTO newFolder = new FileSystemItemDTO()
             {
                 Name = "arjsopwiogkiwadmsiniwlf",
                 Path = "/",

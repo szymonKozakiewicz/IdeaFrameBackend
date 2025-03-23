@@ -61,6 +61,12 @@ namespace IdeaFrame.Infrastructure.Repositories
 
         }
 
+        public async Task RemoveFileSystemItem(FileSystemItem fileToRemove)
+        {
+            this._dbContext.Remove(fileToRemove);
+            await this._dbContext.SaveChangesAsync();
+        }
+
         private async Task<List<FileSystemItem>> GetAllChildrensInFolderForRootParent(Guid ownerId)
         {
             return await _dbContext.FileSystemItems

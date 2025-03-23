@@ -36,5 +36,7 @@ namespace IdeaFrame.Core.Domain.Entities
             Name = name;
             OwnerId = ownerId;
         }
+
+
     }
 }

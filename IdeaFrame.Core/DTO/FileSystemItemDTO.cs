@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IdeaFrame.Core.DTO
 {
-    public class AddFileSystemItemRequest
+    public class FileSystemItemDTO
     {
         [Required]
         public String Path { get; set; }
@@ -17,6 +17,19 @@ namespace IdeaFrame.Core.DTO
         public String Name { get; set; }
         [Required]
         public FileItemType Type { get; set; }
+
+        public string GetPathPlusFileItemName()
+        {
+            if(Path.EndsWith("/"))
+            {
+                return Path + Name;
+            }
+            else
+            {
+                return Path + "/" + Name;
+            }
+            
+        }
 
     }
 }

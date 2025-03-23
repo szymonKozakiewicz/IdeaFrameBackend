@@ -20,7 +20,7 @@ namespace IdeaFrame.UI.Controllers
         }
 
         [HttpPost("addNewFileItem")]
-        public async Task<IActionResult> AddNewFileItem([FromBody]AddFileSystemItemRequest newFileItemRequest)
+        public async Task<IActionResult> AddNewFileItem([FromBody]FileSystemItemDTO newFileItemRequest)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace IdeaFrame.UI.Controllers
         }
 
         [HttpPost("isFileItemNameAvailable")]
-        public async Task<IActionResult> IsFileItemNameAvailable(AddFileSystemItemRequest fileSystemRequest)
+        public async Task<IActionResult> IsFileItemNameAvailable(FileSystemItemDTO fileSystemRequest)
         {
 
             bool isNameAvailable = await this.directoryService.IsNameAvailable(fileSystemRequest);
@@ -66,6 +66,22 @@ namespace IdeaFrame.UI.Controllers
             }
 
             return Ok(result);
+        }
+
+        [HttpPost("removeFileItem")]
+        public async Task<IActionResult> RemoveFileItem(FileSystemItemDTO fileItemToRemove)
+        {
+            try
+            {
+                await this.directoryService.RemoveFileItem(fileItemToRemove);
+            }
+            catch(Exception e) {
+
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok();
+
         }
     }
 }

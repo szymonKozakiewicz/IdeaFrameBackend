@@ -16,5 +16,7 @@ namespace IdeaFrame.Core.Domain.RepositoryContracts
         public Task<List<FileSystemItem>> GetAllChildrensInFolder(FileSystemItem parent,Guid ownerId);
 
         public Task AddNewFileSystemItem(FileSystemItem newFolder);
+
+        public Task RemoveFileSystemItem(FileSystemItem fileToRemove);
     }
 }

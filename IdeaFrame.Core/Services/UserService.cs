@@ -62,5 +62,12 @@ namespace IdeaFrame.Core.Services
             var userName = this._httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
             return await this.userManager.FindByNameAsync(userName);
         }
+
+        public async Task<Guid> GetCurrentUserId()
+        {
+            ApplicationUser currentUser = await this.GetCurrentUser();
+            Guid currentUserId = currentUser.Id;
+            return currentUserId;
+        }
     }
 }
