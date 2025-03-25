@@ -18,5 +18,7 @@ namespace IdeaFrame.Core.ServiceContracts
 
         public Task RemoveFileItem(FileSystemItemDTO fileToRemove);
 
+        public Task MoveFileItem(MoveFileTimeRequestDTO fileToMove);
+
     }
 }

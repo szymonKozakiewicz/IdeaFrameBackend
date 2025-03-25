@@ -61,6 +61,13 @@ namespace IdeaFrame.Infrastructure.Repositories
 
         }
 
+        public async Task MoveFileSystemItem(FileSystemItem fileToMove, FileSystemItem newParent)
+        {
+            fileToMove.Parent = newParent;
+            await this._dbContext.SaveChangesAsync();
+
+        }
+
         public async Task RemoveFileSystemItem(FileSystemItem fileToRemove)
         {
             this._dbContext.Remove(fileToRemove);

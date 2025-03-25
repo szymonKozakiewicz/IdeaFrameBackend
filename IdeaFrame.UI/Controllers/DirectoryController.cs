@@ -83,5 +83,22 @@ namespace IdeaFrame.UI.Controllers
             return Ok();
 
         }
+
+        [HttpPost("moveFileItem")]
+        public async Task<IActionResult> MoveFileItem(MoveFileTimeRequestDTO fileItemToMove)
+        {
+            try
+            {
+                await this.directoryService.MoveFileItem(fileItemToMove);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok();
+
+        }
     }
 }
