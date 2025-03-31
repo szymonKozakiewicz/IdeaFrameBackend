@@ -50,8 +50,13 @@ namespace IdeaFrame.Core.Services
 
         public async Task MoveFileItem(MoveFileTimeRequestDTO fileToMove)
         {
+            
             FileSystemItem? fileItemToMove = await getFileItem(fileToMove);
             FileSystemItem? newParent=await this.getFileItemWithPath(fileToMove.NewPath);
+            if(fileItemToMove.Id == newParent.Id)
+            {
+                throw new Exception("Cannot move file to itself");
+            }
             await this.directoryRepository.MoveFileSystemItem(fileItemToMove, newParent);
             return;
         }

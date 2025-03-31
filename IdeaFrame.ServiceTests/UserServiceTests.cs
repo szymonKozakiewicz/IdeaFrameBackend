@@ -3,6 +3,7 @@ using IdeaFrame.Core.Domain.Entities.IdentitiesEntities;
 using IdeaFrame.Core.DTO;
 using IdeaFrame.Core.ServiceContracts;
 using IdeaFrame.Core.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using System;
@@ -21,6 +22,8 @@ namespace IdeaFrame.ServiceTests
         IJwtService jwtService;
         Mock<IJwtService> jwtServiceMock;
         Mock<IUserStore<ApplicationUser>> store;
+        Mock<IHttpContextAccessor> httpContextAccessorMock;
+        IHttpContextAccessor httpContextAccessor;
 
 
         private void initServicesAndMocks()
@@ -39,7 +42,9 @@ namespace IdeaFrame.ServiceTests
             jwtServiceMock = new Mock<IJwtService>();
             userManager = userManagerMock.Object;
             jwtService = jwtServiceMock.Object;
-            userService = new UserService(userManager, jwtService);
+            httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+            httpContextAccessor = httpContextAccessorMock.Object;
+            userService = new UserService(userManager, jwtService,httpContextAccessor);
         }
 
         [Fact]
