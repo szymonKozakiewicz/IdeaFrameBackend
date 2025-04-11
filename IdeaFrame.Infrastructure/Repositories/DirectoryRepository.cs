@@ -74,6 +74,12 @@ namespace IdeaFrame.Infrastructure.Repositories
             await this._dbContext.SaveChangesAsync();
         }
 
+        public async Task RenameFileSystemItem(FileSystemItem fileToEdit, String fileName)
+        {
+            fileToEdit.Name = fileName;
+            await this._dbContext.SaveChangesAsync();
+        }
+
         private async Task<List<FileSystemItem>> GetAllChildrensInFolderForRootParent(Guid ownerId)
         {
             return await _dbContext.FileSystemItems

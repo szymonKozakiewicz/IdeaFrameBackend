@@ -19,5 +19,7 @@ namespace IdeaFrame.Core.Domain.RepositoryContracts
 
         public Task RemoveFileSystemItem(FileSystemItem fileToRemove);
         public Task MoveFileSystemItem(FileSystemItem fileToMove, FileSystemItem newParent);
+
+        public Task RenameFileSystemItem(FileSystemItem fileToEdit, String fileName);
     }
 }

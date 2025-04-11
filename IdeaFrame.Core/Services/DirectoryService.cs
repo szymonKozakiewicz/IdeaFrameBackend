@@ -65,21 +65,24 @@ namespace IdeaFrame.Core.Services
 
         public async Task<bool> IsNameAvailable(FileSystemItemDTO fileSystemRequest)
         {
+            return await isNameAvailable(fileSystemRequest,fileSystemRequest.Name);
+        }
 
+        private async Task<bool> isNameAvailable(FileSystemItemDTO fileSystemRequest,string nameToCheck)
+        {
             FileSystemItem? parent = await getFileItemWithPath(fileSystemRequest.Path);
-            Guid currentUserId= await _userService.GetCurrentUserId();
-            List<FileSystemItem> fileItemsInParent = await directoryRepository.GetAllChildrensInFolder(parent,currentUserId);
+            Guid currentUserId = await _userService.GetCurrentUserId();
+            List<FileSystemItem> fileItemsInParent = await directoryRepository.GetAllChildrensInFolder(parent, currentUserId);
             List<FileSystemItem> fileItemsWithType = getFileItemsWithType(fileSystemRequest.Type, fileItemsInParent);
             foreach (var fileItem in fileItemsWithType)
             {
-                if (fileItem.Name == fileSystemRequest.Name)
+                if (fileItem.Name == nameToCheck)
                 {
                     return false;
                 }
             }
             return true;
         }
-
 
         public async Task<List<FileSystemItem>> GetAllChildrensInPath(String path)
         {
@@ -105,6 +108,16 @@ namespace IdeaFrame.Core.Services
             await this.directoryRepository.RemoveFileSystemItem(fileItemToRemove);
 
 
+        }
+
+        public async Task EditFileItemName(EditFileItemNameDTO editFileItemDTO)
+        {
+            FileSystemItem? fileItemToEdit = await getFileItem(editFileItemDTO);
+            bool nameIsAvailable=await this.isNameAvailable(editFileItemDTO, editFileItemDTO.NewName);
+            if(!nameIsAvailable)
+                throw new FileSystemNameException("Foleitem with same name already exists in folder");
+
+            await this.directoryRepository.RenameFileSystemItem(fileItemToEdit, editFileItemDTO.NewName);
         }
 
         private async Task removeAllDescendantsOfFolder(FileSystemItem? fileItemToRemove)

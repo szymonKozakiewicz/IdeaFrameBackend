@@ -100,5 +100,24 @@ namespace IdeaFrame.UI.Controllers
             return Ok();
 
         }
+
+
+
+        [HttpPost("editFileItemName")]
+        public async Task<IActionResult> EditFileItemName(EditFileItemNameDTO editFileItem)
+        {
+            try
+            {
+                await this.directoryService.EditFileItemName(editFileItem);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok();
+
+        }
     }
 }

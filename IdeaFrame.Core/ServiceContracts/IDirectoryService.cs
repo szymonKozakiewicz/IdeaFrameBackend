@@ -20,5 +20,7 @@ namespace IdeaFrame.Core.ServiceContracts
 
         public Task MoveFileItem(MoveFileTimeRequestDTO fileToMove);
 
+        public Task EditFileItemName(EditFileItemNameDTO editFileItem);
+
     }
 }
