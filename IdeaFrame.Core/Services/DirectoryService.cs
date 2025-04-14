@@ -53,7 +53,7 @@ namespace IdeaFrame.Core.Services
             
             FileSystemItem? fileItemToMove = await getFileItem(fileToMove);
             FileSystemItem? newParent=await this.getFileItemWithPath(fileToMove.NewPath);
-            if(fileItemToMove.Id == newParent.Id)
+            if(newParent!=null && fileItemToMove.Id == newParent.Id)
             {
                 throw new Exception("Cannot move file to itself");
             }
