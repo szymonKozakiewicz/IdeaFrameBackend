@@ -1,5 +1,7 @@
 ﻿using IdeaFrame.Core.Domain.Entities;
+using IdeaFrame.Core.Domain.Enums;
 using IdeaFrame.Core.Domain.RepositoryContracts;
+using IdeaFrame.Core.DTO;
 using IdeaFrame.Core.ServiceContracts;
 using IdeaFrame.Infrastructure.DbContextCustom;
 using Microsoft.AspNetCore.Http;
@@ -47,15 +49,16 @@ namespace IdeaFrame.Infrastructure.Repositories
 
 
 
-        public async Task<FileSystemItem?> GetFileItemFromParentDirectory(FileSystemItem? parent, string fileItemName, Guid ownerId)
+        public async Task<FileSystemItem?> GetFileItemFromParentDirectory(FileSystemItemSearchInDbDTO fileSystemItemToFind)
         {
-            bool parentIsRootFolder = parent == null;
+            
+            bool parentIsRootFolder = fileSystemItemToFind.Parent == null;
             if (parentIsRootFolder)
             {
-                return await getFileItemFromRootDirectory(fileItemName,ownerId);
+                return await getFileItemFromRootDirectory(fileSystemItemToFind);
             }
             FileSystemItem? result = await _dbContext.FileSystemItems
-                .Where(x => x.ParentId == parent.Id && x.Name == fileItemName)
+                .Where(x => x.ParentId == fileSystemItemToFind.Parent.Id && x.Name == fileSystemItemToFind.Name && x.Type==fileSystemItemToFind.Type)
                 .FirstOrDefaultAsync();
             return result;
 
@@ -89,10 +92,10 @@ namespace IdeaFrame.Infrastructure.Repositories
 
 
 
-        private async Task<FileSystemItem?> getFileItemFromRootDirectory(string fileItemName,Guid ownerId)
+        private async Task<FileSystemItem?> getFileItemFromRootDirectory(FileSystemItemSearchInDbDTO fileItemDTO)
         {
             return await _dbContext.FileSystemItems
-                .Where(x => x.ParentId == null && x.Name == fileItemName && x.OwnerId==ownerId)
+                .Where(x => x.ParentId == null && x.Name == fileItemDTO.Name && x.OwnerId==fileItemDTO.OwnerId && x.Type==fileItemDTO.Type)
                 .FirstOrDefaultAsync();
         }
     }

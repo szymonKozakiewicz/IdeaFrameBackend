@@ -40,7 +40,7 @@ namespace IdeaFrame.Core.Services
             }
             FileSystemItem? parent;
 
-            parent = await getFileItemWithPath(fileSystemRequest.Path);
+            parent = await getFolderItemWithPath(fileSystemRequest.Path);
             Guid currentUserId = await _userService.GetCurrentUserId();
 
             var newFileItem = new FileSystemItem(parent, fileSystemRequest.Type, fileSystemRequest.Name, currentUserId);
@@ -52,50 +52,25 @@ namespace IdeaFrame.Core.Services
         {
 
             FileSystemItem? fileItemToMove = await getFileItem(fileToMove);
-            FileSystemItem? newParent = await this.getFileItemWithPath(fileToMove.NewPath);
+            FileSystemItem? newParent = await this.getFolderItemWithPath(fileToMove.NewPath);
             await validationForMoveFileItem(fileToMove, fileItemToMove, newParent);
 
             await this.directoryRepository.MoveFileSystemItem(fileItemToMove, newParent);
             return;
         }
 
-        private async Task validationForMoveFileItem(MoveFileTimeRequestDTO fileToMove, FileSystemItem? fileItemToMove, FileSystemItem? newParent)
-        {
-            var nameAvailable = await this.IsNameAvailable(fileToMove);
-            if (!nameAvailable)
-            {
-                throw new Exception("Name of file isn't available in new folder");
-            }
-            if (newParent != null && fileItemToMove.Id == newParent.Id)
-            {
-                throw new Exception("Cannot move file to itself");
-            }
-        }
+
 
         public async Task<bool> IsNameAvailable(FileSystemItemDTO fileSystemRequest)
         {
             return await isNameAvailable(fileSystemRequest,fileSystemRequest.Name);
         }
 
-        private async Task<bool> isNameAvailable(FileSystemItemDTO fileSystemRequest,string nameToCheck)
-        {
-            FileSystemItem? parent = await getFileItemWithPath(fileSystemRequest.Path);
-            Guid currentUserId = await _userService.GetCurrentUserId();
-            List<FileSystemItem> fileItemsInParent = await directoryRepository.GetAllChildrensInFolder(parent, currentUserId);
-            List<FileSystemItem> fileItemsWithType = getFileItemsWithType(fileSystemRequest.Type, fileItemsInParent);
-            foreach (var fileItem in fileItemsWithType)
-            {
-                if (fileItem.Name == nameToCheck)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
+
 
         public async Task<List<FileSystemItem>> GetAllChildrensInPath(String path)
         {
-            FileSystemItem? parent = await getFileItemWithPath(path);
+            FileSystemItem? parent = await getFolderItemWithPath(path);
             Guid currentUserId= await _userService.GetCurrentUserId();
             List<FileSystemItem> childList= await directoryRepository.GetAllChildrensInFolder(parent,currentUserId);
             
@@ -124,9 +99,25 @@ namespace IdeaFrame.Core.Services
             FileSystemItem? fileItemToEdit = await getFileItem(editFileItemDTO);
             bool nameIsAvailable=await this.isNameAvailable(editFileItemDTO, editFileItemDTO.NewName);
             if(!nameIsAvailable)
-                throw new FileSystemNameException("Foleitem with same name already exists in folder");
+                throw new FileSystemNameException("File item with same name already exists in folder");
 
             await this.directoryRepository.RenameFileSystemItem(fileItemToEdit, editFileItemDTO.NewName);
+        }
+
+        private async Task<bool> isNameAvailable(FileSystemItemDTO fileSystemRequest, string nameToCheck)
+        {
+            FileSystemItem? parent = await getFolderItemWithPath(fileSystemRequest.Path);
+            Guid currentUserId = await _userService.GetCurrentUserId();
+            List<FileSystemItem> fileItemsInParent = await directoryRepository.GetAllChildrensInFolder(parent, currentUserId);
+            List<FileSystemItem> fileItemsWithType = getFileItemsWithType(fileSystemRequest.Type, fileItemsInParent);
+            foreach (var fileItem in fileItemsWithType)
+            {
+                if (fileItem.Name == nameToCheck)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private async Task removeAllDescendantsOfFolder(FileSystemItem? fileItemToRemove)
@@ -157,8 +148,10 @@ namespace IdeaFrame.Core.Services
 
         private async Task<FileSystemItem?> getFileItem(FileSystemItemDTO fileItemDTO)
         {
-            var fullPath = fileItemDTO.GetPathPlusFileItemName();
-            var result = await this.getFileItemWithPath(fullPath);
+            var parent= await this.getFolderItemWithPath(fileItemDTO.Path);
+            Guid currentUserId = await _userService.GetCurrentUserId();
+            FileSystemItemSearchInDbDTO fileItemToGetDTO = new FileSystemItemSearchInDbDTO(fileItemDTO.Name, parent, fileItemDTO.Type, currentUserId);
+            var result = await this.directoryRepository.GetFileItemFromParentDirectory(fileItemToGetDTO);
             return result;
         }
 
@@ -167,7 +160,22 @@ namespace IdeaFrame.Core.Services
             return fileItemsInParent.Where(fileItem => fileItem.Type == type).ToList();
         }
 
-        private async Task<FileSystemItem?> getFileItemWithPath(string pathStr)
+        private async Task validationForMoveFileItem(MoveFileTimeRequestDTO fileToMove, FileSystemItem? fileItemToMove, FileSystemItem? newParent)
+        {
+            var nameAvailable = await this.IsNameAvailable(fileToMove);
+            if (!nameAvailable)
+            {
+                throw new Exception("Name of file isn't available in new folder");
+            }
+            if (newParent != null && fileItemToMove.Id == newParent.Id)
+            {
+                throw new Exception("Cannot move file to itself");
+            }
+        }
+
+
+
+        private async Task<FileSystemItem?> getFolderItemWithPath(string pathStr)
         {
             if(pathStr == "/")
             {
@@ -179,7 +187,7 @@ namespace IdeaFrame.Core.Services
 
             foreach (var pathSegement in pathSegements)
             {
-                parent = await tryToGetFileSystemItemForSegment(parent, pathSegement);
+                parent = await tryToGetFileSystemItemForSegment(parent, pathSegement,FileItemType.FOLDER);
             }
             return parent;
         }
@@ -199,10 +207,11 @@ namespace IdeaFrame.Core.Services
         }
 
 
-        private async Task<FileSystemItem> tryToGetFileSystemItemForSegment(FileSystemItem? parent, string pathSegement)
+        private async Task<FileSystemItem> tryToGetFileSystemItemForSegment(FileSystemItem? parent, string pathSegement, FileItemType fileItemType)
         {
             Guid currentUserId = await _userService.GetCurrentUserId();
-            var fileSystemItem = await directoryRepository.GetFileItemFromParentDirectory(parent, pathSegement,currentUserId);
+            FileSystemItemSearchInDbDTO fileSystemItemToFind = new FileSystemItemSearchInDbDTO(pathSegement,parent,fileItemType,currentUserId);
+            var fileSystemItem = await directoryRepository.GetFileItemFromParentDirectory(fileSystemItemToFind);
 
             if (fileSystemItem == null)
             {

@@ -1,4 +1,5 @@
 ﻿using IdeaFrame.Core.Domain.Entities;
+using IdeaFrame.Core.DTO;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace IdeaFrame.Core.Domain.RepositoryContracts
     public interface IDirectoryRepository
     {
 
-        public Task<FileSystemItem?> GetFileItemFromParentDirectory(FileSystemItem parent, String fileItemName, Guid ownerId);
+        public Task<FileSystemItem?> GetFileItemFromParentDirectory(FileSystemItemSearchInDbDTO fileSystemItemToFind);
 
         public Task<List<FileSystemItem>> GetAllChildrensInFolder(FileSystemItem parent,Guid ownerId);
 
