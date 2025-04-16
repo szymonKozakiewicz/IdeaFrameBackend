@@ -43,7 +43,7 @@ namespace IdeaFrame.Core.Services
             parent = await getFileItemWithPath(fileSystemRequest.Path);
             Guid currentUserId = await _userService.GetCurrentUserId();
 
-            var newFileItem = new FileSystemItem(parent, FileItemType.FOLDER, fileSystemRequest.Name, currentUserId);
+            var newFileItem = new FileSystemItem(parent, fileSystemRequest.Type, fileSystemRequest.Name, currentUserId);
             await directoryRepository.AddNewFileSystemItem(newFileItem);
 
         }
