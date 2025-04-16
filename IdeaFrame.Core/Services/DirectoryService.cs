@@ -50,18 +50,27 @@ namespace IdeaFrame.Core.Services
 
         public async Task MoveFileItem(MoveFileTimeRequestDTO fileToMove)
         {
-            
+
             FileSystemItem? fileItemToMove = await getFileItem(fileToMove);
-            FileSystemItem? newParent=await this.getFileItemWithPath(fileToMove.NewPath);
-            if(newParent!=null && fileItemToMove.Id == newParent.Id)
-            {
-                throw new Exception("Cannot move file to itself");
-            }
+            FileSystemItem? newParent = await this.getFileItemWithPath(fileToMove.NewPath);
+            await validationForMoveFileItem(fileToMove, fileItemToMove, newParent);
+
             await this.directoryRepository.MoveFileSystemItem(fileItemToMove, newParent);
             return;
         }
 
-
+        private async Task validationForMoveFileItem(MoveFileTimeRequestDTO fileToMove, FileSystemItem? fileItemToMove, FileSystemItem? newParent)
+        {
+            var nameAvailable = await this.IsNameAvailable(fileToMove);
+            if (!nameAvailable)
+            {
+                throw new Exception("Name of file isn't available in new folder");
+            }
+            if (newParent != null && fileItemToMove.Id == newParent.Id)
+            {
+                throw new Exception("Cannot move file to itself");
+            }
+        }
 
         public async Task<bool> IsNameAvailable(FileSystemItemDTO fileSystemRequest)
         {
