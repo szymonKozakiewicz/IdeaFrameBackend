@@ -94,8 +94,25 @@ namespace IdeaFrame.ServiceTests
                 Parent = homeFileSystemItem,
                 Type = FileItemType.FOLDER
             };
-            setupGetFileItemFromParentDirectory(null, "home", userId, homeFileSystemItem);
-            setupGetFileItemFromParentDirectory(homeFileSystemItem, "name", userId, nameFileSystemItem);
+            var homeDbSearch = new FileSystemItemSearchInDbDTO("home", null, FileItemType.FOLDER, userId);
+            var nameDbSearch = new FileSystemItemSearchInDbDTO("name", homeFileSystemItem, FileItemType.FOLDER, userId);
+            setupGetFileItemFromParentDirectory(homeDbSearch, homeFileSystemItem);
+            setupGetFileItemFromParentDirectory(nameDbSearch, nameFileSystemItem);
+            List<FileSystemItem> homeChildrends = new List<FileSystemItem>() { nameFileSystemItem };
+            
+
+            setupGetParentChildrens(homeChildrends);
+
+        }
+
+        private void setupGetParentChildrens(List<FileSystemItem> homeChildrends)
+        {
+            List<FileSystemItem> emptyList = new List<FileSystemItem>();
+            directoryRepositoryMock.Setup(x => x.GetAllChildrensInFolder(It.Is<FileSystemItem>(x => x == null), It.IsAny<Guid>()))
+                .ReturnsAsync(homeChildrends);
+
+            directoryRepositoryMock.Setup(x => x.GetAllChildrensInFolder(It.Is<FileSystemItem>(x => x != null), It.IsAny<Guid>()))
+                .ReturnsAsync(emptyList);
         }
 
         private void setupMethodsFor_MoveFileItem_ToCorrectFolder_ExpectToNotGetException() 
@@ -133,16 +150,24 @@ namespace IdeaFrame.ServiceTests
                 Parent = homeFileSystemItem,
                 Type = FileItemType.FOLDER
             };
-            setupGetFileItemFromParentDirectory(null, "home", userId, homeFileSystemItem);
-            setupGetFileItemFromParentDirectory(homeFileSystemItem, "name", userId, nameFileSystemItem);
-            setupGetFileItemFromParentDirectory(homeFileSystemItem, "alex", userId, alexFileSystemItem);
+            var homeDbSearch=new FileSystemItemSearchInDbDTO("home", null, FileItemType.FOLDER, userId);
+            var nameDbSearch=new FileSystemItemSearchInDbDTO("name", homeFileSystemItem, FileItemType.FOLDER, userId);
+            var alexDbSearch= new FileSystemItemSearchInDbDTO("alex", homeFileSystemItem, FileItemType.FOLDER, userId);
+            setupGetFileItemFromParentDirectory(homeDbSearch, homeFileSystemItem);
+            setupGetFileItemFromParentDirectory(nameDbSearch, nameFileSystemItem);
+            setupGetFileItemFromParentDirectory(alexDbSearch, alexFileSystemItem);
+
+            List<FileSystemItem> homeChildrends = new List<FileSystemItem>() { nameFileSystemItem,alexFileSystemItem };
+
+
+            setupGetParentChildrens(homeChildrends);
         }
 
-        private void setupGetFileItemFromParentDirectory(FileSystemItem? parent, String fileItemName, Guid userId,FileSystemItem valueToReturn)
+        private void setupGetFileItemFromParentDirectory(FileSystemItemSearchInDbDTO dataToSearch,FileSystemItem valueToReturn)
         {
             
             directoryRepositoryMock
-                .Setup(x => x.GetFileItemFromParentDirectory(It.Is<FileSystemItem>(a => a == parent), It.Is<String>(a => a == fileItemName), It.Is<Guid>(k => k.ToString() == userId.ToString())))
+                .Setup(x => x.GetFileItemFromParentDirectory(It.Is<FileSystemItemSearchInDbDTO>(a => a.Name == dataToSearch.Name)))
                 .ReturnsAsync(valueToReturn);
         }
     }
