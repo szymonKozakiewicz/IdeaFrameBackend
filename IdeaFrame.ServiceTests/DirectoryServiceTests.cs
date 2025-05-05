@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using IdeaFrame.Core.Domain.Entities;
 using IdeaFrame.Core.Domain.Enums;
+using IdeaFrame.Core.Domain.Exceptions;
 using IdeaFrame.Core.Domain.RepositoryContracts;
 using IdeaFrame.Core.DTO;
 using IdeaFrame.Core.ServiceContracts;
@@ -33,6 +34,48 @@ namespace IdeaFrame.ServiceTests
         }
 
         [Fact]
+        public async Task AddNewFileItem_WithValidName_ExpectThatMethodAddNewFileSystemItemFromRepositoryWillBeTriggered()
+        {
+            initServicesAndMocks();
+            FileSystemItemDTO newFolder = new FileSystemItemDTO()
+            {
+                Name = "newFolder",
+                Path = "/",
+                Type = FileItemType.FOLDER
+            };
+            setupDefaultVersionOfMethodsForDirectoryTest();
+
+            //act 
+            await this.directoryService.AddNewFileItem(newFolder);
+
+            //assert
+            directoryRepositoryMock.Verify(x => x.AddNewFileSystemItem(It.IsAny<FileSystemItem>()), Times.Once);
+        }
+
+
+        [Fact]
+        public async Task AddNewFileItem_WithNotValidName_ExpectThatExceptionWillBeThrowed()
+        {
+            initServicesAndMocks();
+            FileSystemItemDTO newFolder = new FileSystemItemDTO()
+            {
+                Name = "home",
+                Path = "/",
+                Type = FileItemType.FOLDER
+            };
+            setupDefaultVersionOfMethodsForDirectoryTest();
+
+            //act 
+
+            await FluentActions
+                            .Invoking(() => this.directoryService.AddNewFileItem(newFolder))
+                            .Should()
+                            .ThrowAsync<FileSystemNameException>();
+        }
+
+
+
+        [Fact]
         public async Task MoveFileItem_WithFolderWhichIsMovedToItself_ExpectToGetException()
         {
             initServicesAndMocks();
@@ -42,7 +85,7 @@ namespace IdeaFrame.ServiceTests
                 Name = "name",
                 Path = "/home"
             };
-            setupMethodsFor_MoveFileItem_WithFolderWhichIsMovedToItself_ExpectToGetException();
+            setupDefaultVersionOfMethodsForDirectoryTest();
 
             await FluentActions
                             .Invoking(() => this.directoryService.MoveFileItem(moveFileTimeRequestDTO))
@@ -70,7 +113,7 @@ namespace IdeaFrame.ServiceTests
         }
 
 
-        private void setupMethodsFor_MoveFileItem_WithFolderWhichIsMovedToItself_ExpectToGetException()
+        private void setupDefaultVersionOfMethodsForDirectoryTest()
         {
             Guid userId = Guid.NewGuid();
             userServiceMock.Setup(x => x.GetCurrentUserId()).ReturnsAsync(userId);
@@ -98,7 +141,7 @@ namespace IdeaFrame.ServiceTests
             var nameDbSearch = new FileSystemItemSearchInDbDTO("name", homeFileSystemItem, FileItemType.FOLDER, userId);
             setupGetFileItemFromParentDirectory(homeDbSearch, homeFileSystemItem);
             setupGetFileItemFromParentDirectory(nameDbSearch, nameFileSystemItem);
-            List<FileSystemItem> homeChildrends = new List<FileSystemItem>() { nameFileSystemItem };
+            List<FileSystemItem> homeChildrends = new List<FileSystemItem>() { nameFileSystemItem,homeFileSystemItem };
             
 
             setupGetParentChildrens(homeChildrends);
