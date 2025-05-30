@@ -51,7 +51,7 @@ namespace IdeaFrame.Core.Services
         public async Task MoveFileItem(MoveFileTimeRequestDTO fileToMove)
         {
 
-            FileSystemItem? fileItemToMove = await getFileItem(fileToMove);
+            FileSystemItem? fileItemToMove = await GetFileItem(fileToMove);
             FileSystemItem? newParent = await this.getFolderItemWithPath(fileToMove.NewPath);
             await validationForMoveFileItem(fileToMove, fileItemToMove, newParent);
 
@@ -81,7 +81,7 @@ namespace IdeaFrame.Core.Services
 
         public async Task RemoveFileItem(FileSystemItemDTO fileToRemoveDTO)
         {
-            FileSystemItem? fileItemToRemove = await getFileItem(fileToRemoveDTO);
+            FileSystemItem? fileItemToRemove = await GetFileItem(fileToRemoveDTO);
             if (fileItemToRemove.Type == FileItemType.FILE)
             {
                 await this.directoryRepository.RemoveFileSystemItem(fileItemToRemove);
@@ -96,12 +96,21 @@ namespace IdeaFrame.Core.Services
 
         public async Task EditFileItemName(EditFileItemNameDTO editFileItemDTO)
         {
-            FileSystemItem? fileItemToEdit = await getFileItem(editFileItemDTO);
+            FileSystemItem? fileItemToEdit = await GetFileItem(editFileItemDTO);
             bool nameIsAvailable=await this.isNameAvailable(editFileItemDTO, editFileItemDTO.NewName);
             if(!nameIsAvailable)
                 throw new FileSystemNameException("File item with same name already exists in folder");
 
             await this.directoryRepository.RenameFileSystemItem(fileItemToEdit, editFileItemDTO.NewName);
+        }
+
+        public async Task<FileSystemItem?> GetFileItem(FileSystemItemDTO fileItemDTO)
+        {
+            var parent = await this.getFolderItemWithPath(fileItemDTO.Path);
+            Guid currentUserId = await _userService.GetCurrentUserId();
+            FileSystemItemSearchInDbDTO fileItemToGetDTO = new FileSystemItemSearchInDbDTO(fileItemDTO.Name, parent, fileItemDTO.Type, currentUserId);
+            var result = await this.directoryRepository.GetFileItemFromParentDirectory(fileItemToGetDTO);
+            return result;
         }
 
         private async Task<bool> isNameAvailable(FileSystemItemDTO fileSystemRequest, string nameToCheck)
@@ -146,14 +155,7 @@ namespace IdeaFrame.Core.Services
             return result;
         }
 
-        private async Task<FileSystemItem?> getFileItem(FileSystemItemDTO fileItemDTO)
-        {
-            var parent= await this.getFolderItemWithPath(fileItemDTO.Path);
-            Guid currentUserId = await _userService.GetCurrentUserId();
-            FileSystemItemSearchInDbDTO fileItemToGetDTO = new FileSystemItemSearchInDbDTO(fileItemDTO.Name, parent, fileItemDTO.Type, currentUserId);
-            var result = await this.directoryRepository.GetFileItemFromParentDirectory(fileItemToGetDTO);
-            return result;
-        }
+
 
         private static List<FileSystemItem> getFileItemsWithType(FileItemType type, List<FileSystemItem> fileItemsInParent)
         {

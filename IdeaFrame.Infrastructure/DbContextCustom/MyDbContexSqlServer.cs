@@ -14,6 +14,8 @@ namespace IdeaFrame.Infrastructure.DbContextCustom
     {
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<FileSystemItem> FileSystemItems { get; set; }
+        
+        public DbSet<MindMapNode>MindMapNodes { get; set; }
         public MyDbContexSqlServer(DbContextOptions options) : base(options)
         {
         }
@@ -47,6 +49,16 @@ namespace IdeaFrame.Infrastructure.DbContextCustom
                 .WithMany()
                 .HasForeignKey(x => x.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MindMapNode>()
+                .ToTable("MindMapNodes")
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<MindMapNode>()
+                .HasOne(x => x.MindMapFile)
+                .WithMany()
+                .HasForeignKey(x => x.FileId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
         }
 

@@ -22,5 +22,8 @@ namespace IdeaFrame.Core.ServiceContracts
 
         public Task EditFileItemName(EditFileItemNameDTO editFileItem);
 
+
+        public Task<FileSystemItem?> GetFileItem(FileSystemItemDTO fileItemDTO);
+
     }
 }

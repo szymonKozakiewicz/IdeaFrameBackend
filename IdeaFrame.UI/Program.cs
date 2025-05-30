@@ -76,6 +76,8 @@ builder.Services.AddTransient<IDirectoryService, DirectoryService>();
 builder.Services.AddTransient<IDirectoryRepository, DirectoryRepository>();
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddTransient<IJwtRepository, JwtRepository>();
+builder.Services.AddTransient<IMindMapService, MindMapService>();
+builder.Services.AddTransient<IMindMapRepository, MindMapRepository>();
 builder.Services.AddAuthorization(options =>
 {
     
