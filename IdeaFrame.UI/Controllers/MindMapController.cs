@@ -21,16 +21,18 @@ namespace IdeaFrame.UI.Controllers
         [HttpPost("saveMindMap")]
         public async Task<IActionResult> SaveMindMap([FromBody] SaveMindMapDTO saveMindMapDTO)
         {
+            List<MindMapNodeDTO> currentNodesList;
             try
             {
                 await this._mindMapService.SaveMindMap(saveMindMapDTO);
+                currentNodesList = await this._mindMapService.GetMindMap(saveMindMapDTO.FileItem);
             }
             catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while saving the mind map.");
             }
 
-            return Ok();
+            return Ok(currentNodesList);
             
         }
 
