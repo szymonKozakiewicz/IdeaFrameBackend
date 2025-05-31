@@ -19,6 +19,16 @@ namespace IdeaFrame.Core.Services
             _directoryService = directoryService;
             _mindMapRepository = mindMapRepository;
         }
+
+        public async Task<List<MindMapNodeDTO>> GetMindMap(FileSystemItemDTO mindMapFileDTO)
+        {
+            FileSystemItem mindMapFile = await _directoryService.GetFileItem(mindMapFileDTO);
+            List<MindMapNode>nodes=await _mindMapRepository.GetNodesByFileId(mindMapFile.Id);
+
+            List<MindMapNodeDTO>nodesDTO=nodes.Select(x=>x.ConvertToMindMapDTO()).ToList();
+            return nodesDTO;
+        }
+
         public async Task SaveMindMap(SaveMindMapDTO saveDto)
         {
             FileSystemItem mindMapFile = await _directoryService.GetFileItem(saveDto.FileItem);
@@ -27,6 +37,8 @@ namespace IdeaFrame.Core.Services
             List<MindMapNode> mindMapNodesToUpdate = getNodesToUpdate(saveDto, mindMapFile);
             await _mindMapRepository.UpdateNodes(mindMapNodesToUpdate);
         }
+
+        
 
         private List<MindMapNode> getNodesToAdd(SaveMindMapDTO saveDto, FileSystemItem mindMapFile)
         {
@@ -40,9 +52,10 @@ namespace IdeaFrame.Core.Services
 
                     Name = nodeDTO.Name,
                     MindMapFile = mindMapFile,
-                    positionX = nodeDTO.Coordinates.X,
-                    positionY = nodeDTO.Coordinates.Y,
+                    PositionX = nodeDTO.Coordinates.X,
+                    PositionY = nodeDTO.Coordinates.Y,
                     FileId = mindMapFile.Id,
+                    Color = nodeDTO.Color
                 };
                 mindMapNodesToAdd.Add(newMindMapNode);
 
@@ -63,9 +76,10 @@ namespace IdeaFrame.Core.Services
 
                     Name = nodeDTO.Name,
                     MindMapFile = mindMapFile,
-                    positionX = nodeDTO.Coordinates.X,
-                    positionY = nodeDTO.Coordinates.Y,
-                    Id = Guid.Parse(nodeDTO.Id)
+                    PositionX = nodeDTO.Coordinates.X,
+                    PositionY = nodeDTO.Coordinates.Y,
+                    Id = Guid.Parse(nodeDTO.Id),
+                    Color= nodeDTO.Color
                 };
                 mindMapNodesToUpdate.Add(newMindMapNode);
 

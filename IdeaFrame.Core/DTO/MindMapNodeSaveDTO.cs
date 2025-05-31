@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace IdeaFrame.Core.DTO
 {
-    public class SaveMindMapDTO
+    public class MindMapNodeSaveDTO: MindMapNodeDTO
     {
-        public FileSystemItemDTO FileItem { get; set; }
-        public List<MindMapNodeSaveDTO>Nodes { get; set; }
+
+        public bool WasEdited { get; set; }
     }
 }

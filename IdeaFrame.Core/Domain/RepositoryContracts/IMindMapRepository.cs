@@ -12,5 +12,7 @@ namespace IdeaFrame.Core.Domain.RepositoryContracts
         Task AddNewNodes(List<MindMapNode>nodes);
 
         Task UpdateNodes(List<MindMapNode> nodes);
+
+        public Task<List<MindMapNode>> GetNodesByFileId(Guid fileId);
     }
 }

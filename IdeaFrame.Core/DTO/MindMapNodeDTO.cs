@@ -12,6 +12,6 @@ namespace IdeaFrame.Core.DTO
         public String Name { get; set; }
         public String Color { get; set; }
         public CoordinatesDTO Coordinates { get; set; }
-        public bool WasEdited { get; set; }
+
     }
 }

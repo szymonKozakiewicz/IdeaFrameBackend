@@ -4,6 +4,7 @@ using IdeaFrame.Infrastructure.DbContextCustom;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdeaFrame.Infrastructure.Migrations
 {
     [DbContext(typeof(MyDbContexSqlServer))]
-    partial class MyDbContexSqlServerModelSnapshot : ModelSnapshot
+    [Migration("20250530201640_MindMapNodeAddColor")]
+    partial class MindMapNodeAddColor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -33,5 +33,23 @@ namespace IdeaFrame.UI.Controllers
             return Ok();
             
         }
+
+
+        [HttpPost("loadMindMap")]
+        public async Task<IActionResult> LoadMindMap([FromBody] FileSystemItemDTO fileSystemItem)
+        {
+            List<MindMapNodeDTO> nodes;
+            try
+            {
+                nodes = await this._mindMapService.GetMindMap(fileSystemItem);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while saving the mind map.");
+            }
+
+            return Ok(nodes);
+
+        }
     }
 }

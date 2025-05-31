@@ -1,6 +1,7 @@
 ﻿using IdeaFrame.Core.Domain.Entities;
 using IdeaFrame.Core.Domain.RepositoryContracts;
 using IdeaFrame.Infrastructure.DbContextCustom;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,11 +27,19 @@ namespace IdeaFrame.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task<List<MindMapNode>> GetNodesByFileId(Guid fileId)
+        {
+            return await _dbContext.MindMapNodes
+                .Where(node => node.FileId == fileId)
+                .ToListAsync<MindMapNode>();
+        }
+
         public async Task UpdateNodes(List<MindMapNode> nodes)
         {
             _dbContext.MindMapNodes.UpdateRange(nodes);
             await _dbContext.SaveChangesAsync();
 
         }
+        
     }    
 }
