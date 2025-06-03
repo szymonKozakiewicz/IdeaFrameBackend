@@ -22,6 +22,13 @@ namespace IntegrationTests
             return new StringContent(System.Text.Json.JsonSerializer.Serialize(newUser), Encoding.UTF8, "application/json");
         }
 
+        public async static Task<T> DeserializeJson<T>(HttpResponseMessage response)
+        {
+            string resultJSON = await response.Content.ReadAsStringAsync();
+            T responseObject = JsonConvert.DeserializeObject<T>(resultJSON);
+            return responseObject;
+        }
+
         public static string CreateQueryString(string url,string value,string name )
         {
             StringBuilder sb = new StringBuilder();
