@@ -50,10 +50,11 @@ namespace IdeaFrame.Core.Services
 
         public async Task MoveFileItem(MoveFileTimeRequestDTO fileToMove)
         {
-
+            
             FileSystemItem? fileItemToMove = await GetFileItem(fileToMove);
             FileSystemItem? newParent = await this.getFolderItemWithPath(fileToMove.NewPath);
             await validationForMoveFileItem(fileToMove, fileItemToMove, newParent);
+
 
             await this.directoryRepository.MoveFileSystemItem(fileItemToMove, newParent);
             return;
@@ -63,7 +64,14 @@ namespace IdeaFrame.Core.Services
 
         public async Task<bool> IsNameAvailable(FileSystemItemDTO fileSystemRequest)
         {
+
             return await isNameAvailable(fileSystemRequest,fileSystemRequest.Name);
+        }
+
+        public async Task<bool> IsNameAvailable(MoveFileTimeRequestDTO fileSystemRequest)
+        {
+            var checkIfNameIsAvailableDTO = fileSystemRequest.GetFileSystemItemDtoWhereNewPathIsSetAsPath();
+            return await isNameAvailable(checkIfNameIsAvailableDTO, fileSystemRequest.Name);
         }
 
 

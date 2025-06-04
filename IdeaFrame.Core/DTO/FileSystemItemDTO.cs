@@ -20,7 +20,7 @@ namespace IdeaFrame.Core.DTO
 
         public string GetPathPlusFileItemName()
         {
-            if(Path.EndsWith("/"))
+            if (Path.EndsWith("/"))
             {
                 return Path + Name;
             }
@@ -28,8 +28,18 @@ namespace IdeaFrame.Core.DTO
             {
                 return Path + "/" + Name;
             }
-            
+
         }
 
+        public FileSystemItemDTO GetCloneWithNewPath(string newPath)
+        {
+            return new FileSystemItemDTO()
+            {
+                Name = this.Name,
+                Path = newPath,
+                Type = this.Type
+            };
+
+        }
     }
 }

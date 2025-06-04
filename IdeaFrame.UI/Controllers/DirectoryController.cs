@@ -44,7 +44,7 @@ namespace IdeaFrame.UI.Controllers
         [HttpPost("isFileItemNameAvailable")]
         public async Task<IActionResult> IsFileItemNameAvailable(FileSystemItemDTO fileSystemRequest)
         {
-
+            
             bool isNameAvailable = await this.directoryService.IsNameAvailable(fileSystemRequest);
             if (isNameAvailable)
                 return Ok(true);
@@ -89,6 +89,7 @@ namespace IdeaFrame.UI.Controllers
         {
             try
             {
+                
                 await this.directoryService.MoveFileItem(fileItemToMove);
             }
             catch (Exception e)

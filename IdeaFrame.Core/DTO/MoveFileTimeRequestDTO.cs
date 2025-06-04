@@ -14,5 +14,10 @@ namespace IdeaFrame.Core.DTO
         [Required]
         public String NewPath { get; set; }
 
+        public FileSystemItemDTO GetFileSystemItemDtoWhereNewPathIsSetAsPath()
+        {
+            return this.GetCloneWithNewPath(NewPath);
+        }
+
     }
 }
