@@ -21,18 +21,18 @@ namespace IdeaFrame.UI.Controllers
         [HttpPost("saveMindMap")]
         public async Task<IActionResult> SaveMindMap([FromBody] SaveMindMapDTO saveMindMapDTO)
         {
-            List<MindMapNodeDTO> currentNodesList;
+            LoadMindMapDTO mindMapDTO;
             try
             {
                 await this._mindMapService.SaveMindMap(saveMindMapDTO);
-                currentNodesList = await this._mindMapService.GetMindMap(saveMindMapDTO.FileItem);
+                mindMapDTO = await this._mindMapService.GetMindMap(saveMindMapDTO.FileItem);
             }
             catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while saving the mind map.");
             }
 
-            return Ok(currentNodesList);
+            return Ok(mindMapDTO);
             
         }
 
@@ -40,17 +40,17 @@ namespace IdeaFrame.UI.Controllers
         [HttpPost("loadMindMap")]
         public async Task<IActionResult> LoadMindMap([FromBody] FileSystemItemDTO fileSystemItem)
         {
-            List<MindMapNodeDTO> nodes;
+            LoadMindMapDTO mindMapDTO;
             try
             {
-                nodes = await this._mindMapService.GetMindMap(fileSystemItem);
+                mindMapDTO = await this._mindMapService.GetMindMap(fileSystemItem);
             }
             catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while saving the mind map.");
             }
 
-            return Ok(nodes);
+            return Ok(mindMapDTO);
 
         }
     }

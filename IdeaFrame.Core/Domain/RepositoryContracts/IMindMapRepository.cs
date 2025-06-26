@@ -13,6 +13,12 @@ namespace IdeaFrame.Core.Domain.RepositoryContracts
 
         Task UpdateNodes(List<MindMapNode> nodes);
 
+        Task AddNewBranches(List<MindMapBranch> branches);
+
+        Task UpdateBranches(List<MindMapBranch> branches);
+
+
         public Task<List<MindMapNode>> GetNodesByFileId(Guid fileId);
+        Task<List<MindMapBranch>> GetBranchesByFileId(Guid id);
     }
 }

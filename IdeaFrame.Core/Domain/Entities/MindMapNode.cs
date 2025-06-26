@@ -1,6 +1,7 @@
 ﻿using IdeaFrame.Core.DTO;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,8 @@ namespace IdeaFrame.Core.Domain.Entities
         public int PositionX { get; set; }
         public int PositionY { get; set; }
         public Guid FileId { get; set; }
+        [NotMapped]
+        public Guid UiId { get; set; }
 
         public MindMapNodeDTO ConvertToMindMapDTO()
         {

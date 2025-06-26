@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace IdeaFrame.Core.DTO
 {
-    public class MindMapNodeSaveDTO: MindMapNodeDTO
+    public class NodeForBranchSaveDTO
     {
-
-        public bool WasEdited { get; set; }
+        public String Id { get; set; }
         public String UiId { get; set; }
     }
 }

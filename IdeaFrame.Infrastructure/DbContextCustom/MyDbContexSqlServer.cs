@@ -16,6 +16,8 @@ namespace IdeaFrame.Infrastructure.DbContextCustom
         public DbSet<FileSystemItem> FileSystemItems { get; set; }
         
         public DbSet<MindMapNode>MindMapNodes { get; set; }
+
+        public DbSet<MindMapBranch> MindMapBranches { get; set; }
         public MyDbContexSqlServer(DbContextOptions options) : base(options)
         {
         }
@@ -29,14 +31,33 @@ namespace IdeaFrame.Infrastructure.DbContextCustom
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<RefreshToken>()
-                .ToTable("RefreshTokens")
-                .HasOne<ApplicationUser>()
-                .WithOne()
-                .HasForeignKey<RefreshToken>(rt => rt.UserName)
-                .HasPrincipalKey<ApplicationUser>(u => u.UserName);
+            setUpRefershTokenTable(modelBuilder);
 
+            setUpNodeTable(modelBuilder);
 
+            setUpBranchTable(modelBuilder);
+
+        }
+
+        private static void setUpBranchTable(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<MindMapBranch>()
+                .ToTable("Branches")
+                .HasOne(x => x.Source)
+                .WithMany()
+                .HasForeignKey(x => x.SourceId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasPrincipalKey(x => x.Id);
+            modelBuilder.Entity<MindMapBranch>()
+                .HasOne(x => x.Target)
+                .WithMany()
+                .HasForeignKey(x => x.TargetId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasPrincipalKey(x => x.Id);
+        }
+
+        private static void setUpNodeTable(ModelBuilder modelBuilder)
+        {
             modelBuilder.Entity<FileSystemItem>()
                 .ToTable("FileSystemItems")
                 .HasOne(x => x.Parent)
@@ -58,11 +79,16 @@ namespace IdeaFrame.Infrastructure.DbContextCustom
                 .WithMany()
                 .HasForeignKey(x => x.FileId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-
         }
 
-
-
+        private static void setUpRefershTokenTable(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<RefreshToken>()
+                .ToTable("RefreshTokens")
+                .HasOne<ApplicationUser>()
+                .WithOne()
+                .HasForeignKey<RefreshToken>(rt => rt.UserName)
+                .HasPrincipalKey<ApplicationUser>(u => u.UserName);
+        }
     }
 }

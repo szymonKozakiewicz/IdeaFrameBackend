@@ -11,7 +11,7 @@ namespace IdeaFrame.Core.ServiceContracts
     {
         public Task SaveMindMap(SaveMindMapDTO saveDto);
 
-        public Task<List<MindMapNodeDTO>> GetMindMap(FileSystemItemDTO mindMapFileDTO);
+        public Task<LoadMindMapDTO> GetMindMap(FileSystemItemDTO mindMapFileDTO);
 
     }
 }

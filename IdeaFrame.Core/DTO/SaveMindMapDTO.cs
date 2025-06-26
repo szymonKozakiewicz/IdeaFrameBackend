@@ -10,5 +10,6 @@ namespace IdeaFrame.Core.DTO
     {
         public FileSystemItemDTO FileItem { get; set; }
         public List<MindMapNodeSaveDTO>Nodes { get; set; }
+        public List<MindMapBranchSaveDTO> Branches { get; set; }
     }
 }
