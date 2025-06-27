@@ -8,6 +8,7 @@ namespace IdeaFrame.Core.DTO
 {
     public class MindMapBranchSaveDTO: MindMapBranchDTO
     {
-       public bool WasEdited { get; set; }
+        public bool WasEdited { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

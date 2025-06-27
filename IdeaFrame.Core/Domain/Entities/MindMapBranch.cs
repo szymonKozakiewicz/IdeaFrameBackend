@@ -18,6 +18,22 @@ namespace IdeaFrame.Core.Domain.Entities
         public Guid TargetId { get; set; }
         public Guid SourceId { get; set; }
 
+
+        public static MindMapBranch BuildFromSaveDTO(MindMapBranchSaveDTO saveDto)
+        {
+            var newBranch= new MindMapBranch()
+            {
+                TargetId = Guid.Parse(saveDto.Target.Id),
+                SourceId = Guid.Parse(saveDto.Source.Id)
+                
+            };
+            if(saveDto.Id.Length>0)
+            {
+                newBranch.Id = Guid.Parse(saveDto.Id);
+            }
+            return newBranch;
+        }
+
         public BranchLoadDTO ConvertToBranchLoadDTO()
         {
             return new BranchLoadDTO()

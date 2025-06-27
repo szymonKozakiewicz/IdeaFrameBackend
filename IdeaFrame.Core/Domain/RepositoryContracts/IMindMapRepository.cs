@@ -19,6 +19,8 @@ namespace IdeaFrame.Core.Domain.RepositoryContracts
 
 
         public Task<List<MindMapNode>> GetNodesByFileId(Guid fileId);
+        public Task RemoveNodes(List<MindMapNode> nodes);
+        public Task RemoveBranches(List<MindMapBranch> branches);
         Task<List<MindMapBranch>> GetBranchesByFileId(Guid id);
     }
 }

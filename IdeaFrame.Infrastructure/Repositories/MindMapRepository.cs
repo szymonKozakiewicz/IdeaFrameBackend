@@ -36,6 +36,16 @@ namespace IdeaFrame.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task RemoveNodes(List<MindMapNode> nodes)
+        {
+            _dbContext.MindMapNodes.RemoveRange(nodes);
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task RemoveBranches(List<MindMapBranch> branches)
+        {
+            _dbContext.MindMapBranches.RemoveRange(branches);
+            await _dbContext.SaveChangesAsync();
+        }
         public async Task<List<MindMapBranch>> GetBranchesByFileId(Guid fileId)
         {
             return await _dbContext.MindMapBranches

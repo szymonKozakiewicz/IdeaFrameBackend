@@ -11,5 +11,6 @@ namespace IdeaFrame.Core.DTO
 
         public bool WasEdited { get; set; }
         public String UiId { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

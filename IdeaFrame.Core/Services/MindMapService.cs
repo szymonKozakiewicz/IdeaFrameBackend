@@ -38,10 +38,19 @@ namespace IdeaFrame.Core.Services
 
         public async Task SaveMindMap(SaveMindMapDTO saveDto)
         {
+
+
             FileSystemItem mindMapFile = await _directoryService.GetFileItem(saveDto.FileItem);
+            await removeBranches(saveDto);
             List<MindMapNode> addedNodes = await updateNodes(saveDto, mindMapFile);
             updateNewNodesIdInNewBranchesDTO(saveDto, addedNodes);
             await updateBranches(saveDto, mindMapFile);
+        }
+
+        private async Task removeBranches(SaveMindMapDTO saveDto)
+        {
+            var branchesToRemove = getBranchesToRemove(saveDto);
+            await _mindMapRepository.RemoveBranches(branchesToRemove);
         }
 
         private static void updateNewNodesIdInNewBranchesDTO(SaveMindMapDTO saveDto, List<MindMapNode> addedNodes)
@@ -70,6 +79,8 @@ namespace IdeaFrame.Core.Services
 
         private async Task<List<MindMapNode>> updateNodes(SaveMindMapDTO saveDto, FileSystemItem mindMapFile)
         {
+            var nodesToRemove=getNodesToRemove(saveDto, mindMapFile);
+            await this._mindMapRepository.RemoveNodes(nodesToRemove);
             List<MindMapNode> mindMapNodesToAdd = getNodesToAdd(saveDto, mindMapFile);
             await _mindMapRepository.AddNewNodes(mindMapNodesToAdd);
             List<MindMapNode> mindMapNodesToUpdate = getNodesToUpdate(saveDto, mindMapFile);
@@ -77,6 +88,19 @@ namespace IdeaFrame.Core.Services
             return mindMapNodesToAdd;
         }
 
+        private List<MindMapNode> getNodesToRemove(SaveMindMapDTO saveDto, FileSystemItem mindMapFile)
+        {
+            var nodesToDelete = saveDto.Nodes.Where(x => x.IsDeleted && x.Id.Length > 0)
+                .Select(x => MindMapNode.BuildFromSaveDTO(x, mindMapFile)).ToList();
+            return nodesToDelete;
+        }
+
+        private List<MindMapBranch> getBranchesToRemove(SaveMindMapDTO saveDto)
+        {
+            var branchesToDelete = saveDto.Branches.Where(x => x.IsDeleted && x.Id.Length > 0)
+                .Select(x => MindMapBranch.BuildFromSaveDTO(x)).ToList();
+            return branchesToDelete;
+        }
 
         private List<MindMapNode> getNodesToAdd(SaveMindMapDTO saveDto, FileSystemItem mindMapFile)
         {
@@ -85,17 +109,7 @@ namespace IdeaFrame.Core.Services
             {
                 if (nodeDTO.Id.Length > 0)
                     continue;
-                MindMapNode newMindMapNode = new MindMapNode()
-                {
-
-                    Name = nodeDTO.Name,
-                    MindMapFile = mindMapFile,
-                    PositionX = nodeDTO.Coordinates.X,
-                    PositionY = nodeDTO.Coordinates.Y,
-                    FileId = mindMapFile.Id,
-                    Color = nodeDTO.Color,
-                    UiId = Guid.Parse(nodeDTO.UiId)
-                };
+                MindMapNode newMindMapNode = MindMapNode.BuildFromSaveDTO(nodeDTO, mindMapFile);
                 mindMapNodesToAdd.Add(newMindMapNode);
 
             }
@@ -149,7 +163,7 @@ namespace IdeaFrame.Core.Services
             List<MindMapNode> mindMapNodesToUpdate = new List<MindMapNode>();
             foreach (var nodeDTO in saveDto.Nodes)
             {
-                if (!nodeDTO.WasEdited)
+                if (!nodeDTO.WasEdited || nodeDTO.IsDeleted)
                     continue;
                 MindMapNode newMindMapNode = new MindMapNode()
                 {

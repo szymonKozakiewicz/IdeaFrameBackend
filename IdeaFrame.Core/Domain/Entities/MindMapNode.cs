@@ -21,6 +21,24 @@ namespace IdeaFrame.Core.Domain.Entities
         [NotMapped]
         public Guid UiId { get; set; }
 
+        public static MindMapNode BuildFromSaveDTO(MindMapNodeSaveDTO saveDTO,FileSystemItem file)
+        {
+           var newNode= new MindMapNode()
+            {
+                Name = saveDTO.Name,
+                MindMapFile = file,
+                PositionX = saveDTO.Coordinates.X,
+                PositionY = saveDTO.Coordinates.Y,
+                FileId = file.Id,
+                Color = saveDTO.Color,
+                UiId = Guid.Parse(saveDTO.UiId)
+            };
+            if(saveDTO.Id.Length > 0)
+            {
+                newNode.Id = Guid.Parse(saveDTO.Id);
+            }
+            return newNode;
+        }
         public MindMapNodeDTO ConvertToMindMapDTO()
         {
             return new MindMapNodeDTO
@@ -32,5 +50,6 @@ namespace IdeaFrame.Core.Domain.Entities
             };
 
         }
+
     }
 }
